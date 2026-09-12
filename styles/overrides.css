@@ -57,8 +57,10 @@
   stroke-linejoin: round;
 }
 
-/* The template sized these rows for a shorter address, so the email wrapped
-   and then clipped. Let the whole row and every box inside it size to content. */
+/* The template sized this column for a shorter address: 200px with overflow
+   hidden, against 242px of text. The column and every box inside it size to
+   their content instead. */
+.framer-14zdf3p,
 .framer-7wc2qn,
 .framer-i1cyzr,
 .framer-7wc2qn > div,
@@ -75,6 +77,10 @@
 .framer-7wc2qn,
 .framer-i1cyzr {
   gap: 10px !important;
+}
+
+.framer-14zdf3p {
+  flex: none !important;
 }
 
 .framer-1b1h37u {
@@ -139,6 +145,13 @@
    The template's overlay is opened by Framer's runtime; this is the sheet the
    button now opens (see components/Menu.tsx).
    ------------------------------------------------------------------------- */
+/* `display: flex` here outranks the UA rule for [hidden], so a closed sheet
+   stayed in the layout as an invisible full-screen overlay and swallowed every
+   click on the page. It has to leave the flow when closed. */
+.site-menu[hidden] {
+  display: none !important;
+}
+
 .site-menu {
   position: fixed;
   inset: 0;
@@ -156,6 +169,8 @@
 }
 
 .site-menu.is-open { opacity: 1; }
+
+.site-menu:not(.is-open) { pointer-events: none; }
 
 .site-menu__link {
   font-family: "Space Grotesk", "Space Grotesk Placeholder", sans-serif;
@@ -239,11 +254,17 @@
 .framer-16qjphs { padding-bottom: 140px !important; }
 
 /* The testimonial rows carry a left/right fade; the surrounding sections are
-   not the same colour, so it reads as a shadow. */
+   not the same colour, so it reads as a shadow.
+
+   They also centre the track inside the window, which puts its static position
+   at (window - track) / 2. The marquee then translates from there and the
+   reverse row runs out of content before the right edge, so the track is
+   anchored to the start and the animation owns the whole offset. */
 .framer-gq19hk,
 .framer-x8ddw2 {
   -webkit-mask: none !important;
   mask: none !important;
+  justify-content: flex-start !important;
 }
 
 /* --- Tickers --------------------------------------------------------------
@@ -261,8 +282,17 @@
 .ds-marquee__track { animation: ds-marquee 32s linear infinite; }
 .ds-slider__track { animation: ds-marquee 90s linear infinite; }
 
-.ff-ticker__track--forward { animation: ff-ticker 60s linear infinite; }
-.ff-ticker__track--reverse { animation: ff-ticker 60s linear infinite reverse; }
+/* Negative delays start both rows mid-cycle, so neither shows its leading
+   edge on load, and the two rows are never in step. */
+.ff-ticker__track--forward {
+  animation: ff-ticker 60s linear infinite;
+  animation-delay: -15s;
+}
+
+.ff-ticker__track--reverse {
+  animation: ff-ticker 60s linear infinite reverse;
+  animation-delay: -40s;
+}
 
 .ds-slider__track:hover,
 .ff-ticker__track:hover { animation-play-state: paused; }
