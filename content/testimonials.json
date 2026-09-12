@@ -1,32 +1,32 @@
 [
   {
-    "name": "Emeka Obi",
-    "role": "Founder, SynthrixAi",
+    "name": "Okwudili Amos Egbe",
+    "role": "CEO, SynthrixAi",
     "quote": "Nelson built the marketplace and the rewards engine behind it. Points settle correctly under load, and the dashboard gives us numbers we actually trust."
   },
   {
-    "name": "Tunde Bakare",
-    "role": "Product Lead, Paysnap",
-    "quote": "He owned both the interface and the payment APIs. Bill payments and gift cards went live on schedule and reconciliation stopped being a manual job."
+    "name": "Ezekwere Precious",
+    "role": "Product Manager, Paysnap",
+    "quote": "He owned the interface and the payment APIs together. Bill payments and gift cards shipped on schedule, and reconciliation stopped being a manual job."
   },
   {
-    "name": "Chidinma Eze",
-    "role": "Operations, ChopExpress",
-    "quote": "Order tracking used to lag at peak. After his rework riders, vendors and customers all see the same state in real time."
+    "name": "Jeremiah Oludaniel",
+    "role": "CEO, ODJTech",
+    "quote": "We handed him the King's Throne build end to end. Giving, events and the live stream all in one place, delivered the way we scoped it."
   },
   {
-    "name": "Bola Adeyemi",
-    "role": "Director, Betro Furniture",
-    "quote": "Our storefront finally looks the part. Search, collections and returns all work the way customers expect, and the team can update it without us."
+    "name": "Chief Emmanuel Enukora",
+    "role": "Betro Furniture",
+    "quote": "Our storefront finally looks the part. Search, collections and returns work the way customers expect, and my team can update it without calling anyone."
   },
   {
-    "name": "Grace Apio",
-    "role": "Administrator, Tororo Girls' School",
+    "name": "Namudala Emmanuel",
+    "role": "Teacher, Tororo Girls' School",
     "quote": "Parents check results themselves now. The e-report system removed most of the calls our office used to field every term."
   },
   {
-    "name": "Samuel Okoro",
-    "role": "Pastor, King's Throne",
-    "quote": "Giving, events and the live stream in one place. Nelson understood what a church site actually needs, not just how it should look."
+    "name": "Williams Ben Chukwuemeka",
+    "role": "Product Manager, Afobaino Films",
+    "quote": "The reels load fast and the enquiry form works. Couples reach us through the site now instead of only through referrals."
   }
 ]

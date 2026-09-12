@@ -9,7 +9,7 @@ import json
 import os
 import re
 
-from htmlutil import retext
+from htmlutil import element_at, children_of, retext
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -46,6 +46,30 @@ def load_people():
         return json.load(f)
 
 
+def _card_groups(html):
+    """Every element whose direct children are testimonial cards.
+
+    The section renders the row once per breakpoint and only one of those is
+    wrapped in a ticker list, so the groups are found by structure instead.
+    """
+    groups, seen = [], set()
+    for m in re.finditer(r'data-framer-name="testimonial card"', html):
+        node = m.start()
+        while True:
+            node = html.rfind('<div', 0, node)
+            if node < 0:
+                break
+            span = element_at(html, node)
+            if not span or span[2] < m.start():
+                continue
+            if html[span[0]:span[1]].count('data-framer-name="testimonial card"') > 1:
+                if node not in seen:
+                    seen.add(node)
+                    groups.append(node)
+                break
+    return groups
+
+
 def rebuild(html):
     people = load_people()
     mapping = {}
@@ -67,8 +91,8 @@ def rebuild(html):
         html = re.sub(
             r'src="https://framerusercontent\.com/images/%s[^"]*"' % re.escape(asset),
             'src="/avatars/a%d.png"' % i, html)
-
     html = re.sub(r'\salt="[^"]*"', '', html)
-    print('  testimonials swapped:', sum(1 for v in hits.values() if v), 'of',
-          len(mapping))
+
+    print('  testimonials: %d fields swapped'
+          % sum(1 for v in hits.values() if v))
     return html
