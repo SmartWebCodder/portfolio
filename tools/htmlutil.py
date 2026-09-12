@@ -99,7 +99,7 @@ def retext(page, mapping):
     """
     hits = {k: 0 for k in mapping}
     out, i = [], 0
-    tag_start = re.compile(r'<(h1|h2|h3|h4|p|span|a|div)\b')
+    tag_start = re.compile(r'<(h[1-6]|p|span|a|div|blockquote|figcaption)\b')
     while True:
         m = tag_start.search(page, i)
         if not m:

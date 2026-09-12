@@ -3,6 +3,7 @@
 import re, os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import skills
+import testimonials
 from htmlutil import element_at, strip_em_dashes
 from tojsx import convert
 
@@ -125,18 +126,10 @@ def build_experience():
 # --------------------------------------------------------------------------
 # Testimonials / "Don't just take my words for it"
 # --------------------------------------------------------------------------
-AVATARS = ['0t1mAkMD8DjLQwkEPKvWPvRdw','BIKrk2jNPbjgqk1KIiOt21i28c',
-           'Ir7RsDIGqdl9NXRsjqxfC8LSeI','fSilKlVeMn7BTOvTYqgkAXZeq8',
-           'plfPyU9U9DxoD47TDqzj1bNU0','wud5asxR22rV2WSRb526VDJgk']
-
 def build_testimonials():
     h = read('testimonials')
-    for i, a in enumerate(AVATARS, start=1):
-        h = re.sub(r'srcSet="[^"]*%s[^"]*"' % re.escape(a), '', h)
-        h = re.sub(r'srcset="[^"]*%s[^"]*"' % re.escape(a), '', h)
-        h = re.sub(r'src="https://framerusercontent\.com/images/%s[^"]*"' % re.escape(a),
-                   'src="/avatars/a%d.png"' % i, h)
-    h = h.replace('Snilloc', 'Nelson')
+    h = re.sub(r'\s(?:srcset|srcSet)="[^"]*"', '', h)
+    h = testimonials.rebuild(h)
     return tag_tickers(h)
 
 def tag_tickers(html):
@@ -161,8 +154,11 @@ def tag_tickers(html):
                  .replace('width:100%;', 'width:max-content;')
                  .replace('transform:translateX(-20px)', 'transform:none'))
         out.append(html[i:m.start()])
+        # A single duplicated run is narrower than a wide viewport, so the
+        # loop point shows as a gap. Four runs keep the half-track wider than
+        # the screen at every breakpoint.
         out.append('<ul role="group" class="ff-ticker__track ff-ticker__track--%s" '
-                   'style="%s">%s%s</ul>' % (direction, style, items, items))
+                   'style="%s">%s</ul>' % (direction, style, items * 4))
         i = span[2]
         n += 1
     out.append(html[i:])
