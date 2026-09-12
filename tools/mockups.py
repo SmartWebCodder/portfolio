@@ -118,6 +118,44 @@ def laptop(shot, canvas=CANVAS):
     return scene.convert('RGB')
 
 
+def placeholder_screen(size):
+    """The screen for the open slot: a terminal prompt, not a screenshot."""
+    w, h = size
+    img = Image.new('RGB', (w, h), (18, 18, 20))
+    d = ImageDraw.Draw(img)
+
+    from PIL import ImageFont
+    def font(px, bold=False):
+        for path in ('/System/Library/Fonts/Menlo.ttc',
+                     '/System/Library/Fonts/Monaco.ttf',
+                     '/System/Library/Fonts/Supplemental/Courier New.ttf'):
+            if os.path.exists(path):
+                try:
+                    return ImageFont.truetype(path, px)
+                except OSError:
+                    continue
+        return ImageFont.load_default()
+
+    bar = round(h * 0.075)
+    d.rectangle([0, 0, w, bar], fill=(32, 32, 36))
+    for i, tone in enumerate([(255, 95, 86), (255, 189, 46), (39, 201, 63)]):
+        cx = round(bar * 0.55) + i * round(bar * 0.5)
+        r = round(bar * 0.14)
+        d.ellipse([cx - r, bar / 2 - r, cx + r, bar / 2 + r], fill=tone)
+
+    x, y = round(w * 0.07), round(h * 0.22)
+    size_l = round(h * 0.055)
+    d.text((x, y), '> awaiting brief...', font=font(size_l), fill=(255, 122, 47))
+    d.text((x, y + size_l * 2.0), 'YOUR NEXT', font=font(round(h * 0.13)),
+           fill=(245, 245, 245))
+    d.text((x, y + size_l * 2.0 + round(h * 0.145)), 'PROJECT',
+           font=font(round(h * 0.13)), fill=(255, 122, 47))
+    d.text((x, y + size_l * 2.0 + round(h * 0.33)),
+           'schema  ->  api  ->  interface  ->  shipped',
+           font=font(round(h * 0.042)), fill=(150, 150, 155))
+    return img
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     total = 0
@@ -131,6 +169,12 @@ def main():
         size = os.path.getsize(out)
         total += size
         print('%-34s %6.0f KB' % (slug, size / 1e3))
+    slot = laptop(placeholder_screen((2560, 1600)))
+    out = os.path.join(OUT, 'your-next-project.webp')
+    slot.save(out, 'WEBP', quality=QUALITY, method=6)
+    total += os.path.getsize(out)
+    print('%-34s %6.0f KB' % ('your-next-project', os.path.getsize(out) / 1e3))
+
     print('total %.0f KB' % (total / 1e3))
 
 

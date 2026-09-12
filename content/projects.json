@@ -22,6 +22,39 @@
     "href": "https://paysnap.ng"
   },
   {
+    "title": "Tredi Books",
+    "description": "A business platform for multi-shop retailers: stock, sales, expenses, customers and sales reps in one place, with apps on both stores.",
+    "tags": [
+      "Laravel",
+      "Vue.js",
+      "MySQL"
+    ],
+    "image": "tredibooks",
+    "href": "https://tredibooks.com"
+  },
+  {
+    "title": "OnLicense",
+    "description": "A license server and admin console for shipped software: activation, updates and paid addons, verified against Envato and audited end to end.",
+    "tags": [
+      "NestJS",
+      "PostgreSQL",
+      "Redis"
+    ],
+    "image": "onlicense",
+    "href": "https://onlicense.dev"
+  },
+  {
+    "title": "Unispend",
+    "description": "A campus payments ecosystem with real-time student wallet top-ups, QR-code payments and transaction tracking, plus dashboards for revenue sharing.",
+    "tags": [
+      "React",
+      "NestJS",
+      "MongoDB"
+    ],
+    "image": "unispend",
+    "href": "https://unispend.com"
+  },
+  {
     "title": "ChopExpress",
     "description": "A multi-tenant food delivery platform handling high-concurrency rider, business and order workflows, with live order tracking and app distribution.",
     "tags": [
@@ -108,5 +141,14 @@
     ],
     "image": "afobianofilms",
     "href": "https://afobainofilms.com"
+  },
+  {
+    "title": "Your Next Project",
+    "description": "There is room here for what you are building. Tell me the problem and I will take it from schema to shipped interface.",
+    "tags": [
+      "Available now"
+    ],
+    "image": "your-next-project",
+    "href": "mailto:akintoyenelson@gmail.com"
   }
 ]
