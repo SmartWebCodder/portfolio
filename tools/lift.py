@@ -2,7 +2,8 @@
 """Lift the three Fastfolio sections, swap the template's copy for Nelson's."""
 import re, os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from htmlutil import element_at
+import skills
+from htmlutil import element_at, strip_em_dashes
 from tojsx import convert
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -59,43 +60,46 @@ def build_skills():
         h = re.sub(r'(>)%s(</p>)' % re.escape(old), r'\g<1>%s\g<2>' % new, h)
     h = h.replace(
         'A curated set of technologies I rely on to build modern web experiences',
-        'The stack I reach for across the whole product — interface, API and data layer')
-    return h
+        'The stack I reach for across the whole product: interface, API and data layer')
+    return skills.rebuild(h)
 
 # --------------------------------------------------------------------------
 # Experience / "Where I've Worked"
 # --------------------------------------------------------------------------
+SUBTITLE = ('Seven years of shipping production systems, and the interfaces '
+            'on top of them')
+
 JOBS = [
-    ('Frontend Engineer — Paystack', 'Senior Backend Engineer — Pandar Resources',
-     '2023 — Present', '2026 — Present',
+    ('Frontend Engineer — Paystack', 'Senior Software Engineer, Pandar Resources',
+     '2023 — Present', '2026 - Present',
      ['Built and maintained responsive user interfaces using modern JavaScript frameworks',
       'Collaborated with designers to deliver clean, user-focused experiences',
       'Optimized performance and improved page load times across key products'],
-     ['Built API integrations and data pipelines in Node.js, TypeScript and NestJS with MongoDB',
+     ['Built the dashboards and the APIs behind them in TypeScript, React and NestJS',
       'Cut average response times by 60% through connection pooling and query optimisation',
       'Added structured logging and metrics, speeding up debugging of high-throughput services']),
-    ('Frontend Engineer — Hubtel', 'Senior Backend Engineer — ODJTech Multimedia',
-     '2022 — 2023', '2025 — 2026',
+    ('Frontend Engineer — Hubtel', 'Full Stack Engineer, ODJTech Multimedia',
+     '2022 — 2023', '2025 - 2026',
      ['Built responsive customer-facing interfaces for web products',
       'Worked closely with product and design teams to improve usability',
       'Optimized UI performance and reusable component structure'],
-     ['Designed event-driven services in NestJS and TypeScript over high-volume data flows',
-      'Implemented Redis caching strategies that held response times under concurrent load',
-      'Drove reliability work — failure-mode handling and autoscaling for production stability']),
-    ('UI Engineer — Meta', 'Senior Backend Engineer — Unispend',
-     '2021 — 2022', '2025 — 2026',
+     ['Shipped customer-facing interfaces in React alongside the event-driven services behind them',
+      'Implemented Redis caching that held response times steady under concurrent load',
+      'Drove reliability work: failure-mode handling and autoscaling for production stability']),
+    ('UI Engineer — Meta', 'Product Engineer, Unispend',
+     '2021 — 2022', '2025 - 2026',
      ['Developed polished interface components for internal tools and product experiences',
       'Improved design consistency across multiple user flows',
       'Collaborated with cross-functional teams to ship high-quality features'],
-     ['Shipped real-time student wallet top-ups, QR-code payments and transaction tracking',
-      'Built JWT auth with rate limiting, plus analytics dashboards for revenue-sharing models',
-      'Instrumented notification flows and observability for high-concurrency transactions']),
-    ('Frontend Lead — Google', 'Fullstack Engineer — FastPay Tech',
-     '2020 — 2021', '2023 — 2024',
+     ['Built the student wallet UI, QR-code payment flow and transaction history end to end',
+      'Designed the analytics dashboards revenue-sharing partners use day to day',
+      'Wired JWT auth and rate limiting across the campus payments ecosystem']),
+    ('Frontend Lead — Google', 'Full Stack Engineer, FastPay Tech',
+     '2020 — 2021', '2023 - 2024',
      ['Crafted scalable web interfaces with a focus on speed and accessibility',
       'Contributed to clean component systems and maintainable codebases',
       'Helped refine user experiences through testing and iteration'],
-     ['Built payment interfaces alongside the APIs behind them, owning both ends of the flow',
+     ['Built payment interfaces and the APIs behind them, owning both ends of the flow',
       'Designed a real-time webhook system with delivery guarantees for payment notifications',
       'Reduced manual reconciliation by 40% across high-volume transaction traffic']),
 ]
@@ -112,12 +116,10 @@ def build_experience():
         # the date follows its (already renamed) title within the same card
         h = re.sub(r'(%s.{0,4000}?)>%s<' % (re.escape(new_t), re.escape(old_d)),
                    lambda m: m.group(1) + '>' + new_d + '<', h, count=6, flags=re.S)
-    h = h.replace("A summary of my professional journey and the impact I've made",
-                  "A summary of my professional journey and the impact I've made")
-    h = h.replace('A summary of my professional journey and the impact I&#x27;ve made',
-                  'Seven years of shipping production systems — and the interfaces on top of them')
-    h = h.replace('A summary of my professional journey and the impact I’ve made',
-                  'Seven years of shipping production systems — and the interfaces on top of them')
+    for variant in ("A summary of my professional journey and the impact I've made",
+                    'A summary of my professional journey and the impact I&#x27;ve made',
+                    'A summary of my professional journey and the impact I\u2019ve made'):
+        h = h.replace(variant, SUBTITLE)
     return h
 
 # --------------------------------------------------------------------------
@@ -177,6 +179,7 @@ BUILDERS = {
 for comp, (name, fn) in BUILDERS.items():
     print('==', comp)
     html = fn()
+    html = strip_em_dashes(html)
     jsx = convert(html)
     open(os.path.join(FF, name + '.built.html'), 'w').write(html)
     open(os.path.join(FF, name + '.built.jsx'), 'w').write(jsx)

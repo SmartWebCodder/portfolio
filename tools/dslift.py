@@ -13,8 +13,9 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+import services
 import works
-from htmlutil import element_at, retext
+from htmlutil import element_at, children_of, plain, retext, strip_em_dashes
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DS = os.path.join(REPO, '.lift', 'ds')
@@ -24,6 +25,19 @@ LINKEDIN = 'https://www.linkedin.com/in/akintoye-ayomide-nelson/'
 MAILTO = 'mailto:akintoyenelson@gmail.com'
 CV = '/Akintoye_Ayomide_Nelson_CV.pdf'
 TEL = 'tel:+2348138412167'
+
+# The stats are a Framer code component that counts up from its own runtime.
+# Without it they sit at zero, so each is replaced with a target the page can
+# animate itself (see components/Counters.tsx).
+STATS = {
+    'Years in Experience': 7,
+    'Teams Worldwide': 8,
+    'Completed Projects': 50,
+}
+
+KEEP_CLIENTS = 4
+DROP_FOOTER_LINKS = {'404', 'PRIVACY POLICY', 'TERM & CONDITION',
+                     'PRIVACYPOLICY', 'TERM&CONDITION'}
 
 HERO_PORTRAIT = '/ds/e8w16q5wJI84smxcPUFYRRZmI.png'
 PORTRAIT = '/nelson.webp'
@@ -279,6 +293,107 @@ def contact_icons(page):
     return page
 
 
+def wire_counters(page):
+    """Swap Framer's counter component for a span the page can animate.
+
+    Each metric is one child of the Progress Metrics block, so the target is
+    matched on the label the child renders.
+    """
+    wired = 0
+    start = 0
+    while True:
+        i = page.find('data-framer-name="Progress Metrics ', start)
+        if i < 0:
+            break
+        block = page.rfind('<div', 0, i)
+        span = element_at(page, block)
+        if not span:
+            break
+        start = span[2]
+
+        for a, b in reversed(list(children_of(page, block))):
+            text = plain(page[a:b])
+            target = next((v for k, v in STATS.items() if text.endswith(k)), None)
+            if target is None:
+                continue
+            child = page[a:b]
+            m = re.search(r'<span style="display:inline-flex[^"]*">', child)
+            if not m:
+                continue
+            # replace the span's contents, not a guessed run of closing tags:
+            # matching '</span></span>' left the outermost one unbalanced and
+            # silently truncated the document.
+            inner = element_at(child, m.start())
+            child = (child[:inner[0]]
+                     + '<span data-count="%d">0</span>' % target
+                     + child[inner[1]:])
+            page = page[:a] + child + page[b:]
+            wired += 1
+
+    print('counters wired:', wired)
+    return page
+
+
+def trim_clients(page):
+    """Keep four of the template's eight client logos, in every breakpoint grid.
+
+    Each grid holds a logo once per breakpoint, so the children come in
+    consecutive pairs; dropping the tail keeps the pairs intact.
+    """
+    section = page.find('id="my-client"')
+    if section < 0:
+        return page
+
+    trimmed = 0
+    cursor = section
+    while True:
+        i = page.find('data-framer-name="Logo Wrapper"', cursor)
+        if i < 0:
+            break
+
+        grid = i
+        while True:
+            grid = page.rfind('<div', 0, grid)
+            if grid < 0 or grid < section:
+                grid = None
+                break
+            span = element_at(page, grid)
+            if span and page[span[0]:span[1]].count('data-framer-name="Logo Wrapper"') > 1:
+                break
+        if grid is None:
+            break
+
+        kids = list(children_of(page, grid))
+        per_logo = 2 if len(kids) % 2 == 0 else 1
+        keep = KEEP_CLIENTS * per_logo
+        if len(kids) > keep:
+            page = page[:kids[keep][0]] + page[kids[-1][1]:]
+            trimmed += 1
+        cursor = element_at(page, grid)[2]
+
+    print('client grids trimmed:', trimmed, 'to', KEEP_CLIENTS, 'logos each')
+    return page
+
+
+def trim_footer_links(page):
+    """Drop the template's 404, privacy policy and terms links."""
+    removed = 0
+    while True:
+        for m in re.finditer(r'<a\b', page):
+            span = element_at(page, m.start())
+            if not span:
+                continue
+            text = plain(page[span[0]:span[1]]).replace('\u00a0', ' ').upper()
+            if text in DROP_FOOTER_LINKS:
+                page = page[:m.start()] + page[span[2]:]
+                removed += 1
+                break
+        else:
+            break
+    print('footer legal links removed:', removed)
+    return page
+
+
 def rewrite_links(page):
     page, n = re.subn(
         r'href="([^"#][^"]*)"',
@@ -312,10 +427,17 @@ def rename_labels(page):
     return page
 
 
+def block_count(page):
+    """Direct children of the page root, as a structural fingerprint."""
+    root = page.find('<div class="framer-R2Reu')
+    return len(list(children_of(page, root))) if root >= 0 else -1
+
+
 def main():
     page = open(os.path.join(DS, 'page.html'), encoding='utf-8').read()
 
     page = strip_promo(page)
+    expected_blocks = block_count(page)
     page = localise_images(page)
     page = strip_scroll_jack(page)
     page = swap_wordmark(page)
@@ -326,11 +448,23 @@ def main():
         print('  %3d  %s' % (n, key[:64]))
 
     page = works.rebuild(page)
+    page = services.rebuild(page)
+    page = wire_counters(page)
+    page = trim_clients(page)
+    page = trim_footer_links(page)
     page = tag_tickers(page)
     page = contact_icons(page)
     page = rewrite_links(page)
     page = recolour(page)
     page = rename_labels(page)
+    page = strip_em_dashes(page)
+
+    # A step that leaves unbalanced tags truncates the tree silently, so the
+    # page's own shape is checked before anything is written.
+    if block_count(page) != expected_blocks:
+        raise SystemExit(
+            'page structure changed: %d top-level blocks, expected %d'
+            % (block_count(page), expected_blocks))
 
     out = os.path.join(DS, 'page.built.html')
     open(out, 'w').write(page)

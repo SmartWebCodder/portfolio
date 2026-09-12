@@ -1,0 +1,22 @@
+[
+  {
+    "number": "(01)",
+    "title": "Custom Web Development",
+    "body": "Build complete web applications from scratch, frontend to backend, optimized for speed, security and scalability."
+  },
+  {
+    "number": "(02)",
+    "title": "Frontend Engineering",
+    "body": "Accessible, responsive interfaces in React and Next.js, built on clean component systems that stay maintainable as the product grows."
+  },
+  {
+    "number": "(03)",
+    "title": "Server logic & API Development",
+    "body": "Event-driven services, REST APIs and data pipelines in Node.js, NestJS and Laravel, tuned for throughput, caching and fault tolerance."
+  },
+  {
+    "number": "(04)",
+    "title": "Full Stack Application Development",
+    "body": "End-to-end ownership: schema design, API, interface and deployment, shipped with CI/CD, observability and room to scale."
+  }
+]
