@@ -96,7 +96,15 @@ def rebuild(page):
                 '<img ',
                 '<img loading="lazy" decoding="async" '
                 'alt="%s screenshot" ' % project['title'].replace('"', ''))
-            card = re.sub(r'href="[^"]*"', 'href="%s"' % project['href'], card)
+            href = project.get('href')
+            if href:
+                card = re.sub(r'href="[^"]*"', 'href="%s"' % href, card)
+                card = card.replace('<a ', '<a target="_blank" rel="noreferrer noopener" ', 1)
+            else:
+                # nothing live to point at: keep the card, drop the link
+                card = re.sub(r'^<a\b', '<div', card)
+                card = re.sub(r'</a>$', '</div>', card)
+                card = re.sub(r'\shref="[^"]*"', '', card, count=1)
             out.append(card)
 
         page = page[:children[0][0]] + ''.join(out) + page[children[-1][1]:]

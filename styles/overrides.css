@@ -32,6 +32,14 @@
   color: #fff;
 }
 
+/* --- Hero name ------------------------------------------------------------
+   The template's mobile size still overflows a long surname, which then breaks
+   mid-word. A fluid size keeps each word on one line at every width.
+   ------------------------------------------------------------------------- */
+.framer-1yzidgz h1 {
+  font-size: clamp(34px, 10.4vw, 168px) !important;
+}
+
 /* --- Hero -----------------------------------------------------------------
    The template's portrait is a full-bleed photo; this one is a cut-out, so it
    is contained rather than cropped and anchored to the base of the frame.
@@ -380,6 +388,7 @@
     display: grid !important;
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     align-items: start !important;
+    gap: 20px !important;
   }
 
   .framer-e0iod0 > * {
@@ -387,6 +396,9 @@
     max-width: none !important;
   }
 }
+
+/* the template spaces two wide cards apart; three need less room between them */
+.framer-e0iod0 { gap: 20px !important; }
 
 /* --- Project cards --------------------------------------------------------
    Screenshots are lazy-loaded, so the frame shows a shimmer until one paints.

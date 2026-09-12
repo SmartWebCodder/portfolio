@@ -1,16 +1,5 @@
 [
   {
-    "title": "SynthrixAi",
-    "description": "An offer marketplace where every purchase unlocks redeemable bonus points, with tiered rewards, a recycling flow for unused offers and a live earnings dashboard.",
-    "tags": [
-      "Laravel",
-      "Vue.js",
-      "PostgreSQL"
-    ],
-    "image": "synthrixai",
-    "href": "https://synthrixai.com"
-  },
-  {
     "title": "Paysnap",
     "description": "A licensed fintech platform for paying bills, buying gift cards and moving value instantly, with a mobile app on both stores and a web presence behind it.",
     "tags": [
@@ -19,7 +8,7 @@
       "PostgreSQL"
     ],
     "image": "paysnap",
-    "href": "https://paysnap.ng"
+    "href": "https://www.thepaysnap.com/"
   },
   {
     "title": "Tredi Books",
@@ -30,7 +19,7 @@
       "MySQL"
     ],
     "image": "tredibooks",
-    "href": "https://tredibooks.com"
+    "href": "https://tredibooks.com/"
   },
   {
     "title": "OnLicense",
@@ -41,7 +30,7 @@
       "Redis"
     ],
     "image": "onlicense",
-    "href": "https://onlicense.dev"
+    "href": "https://license.smarthubinnovation.com/"
   },
   {
     "title": "Unispend",
@@ -52,7 +41,18 @@
       "MongoDB"
     ],
     "image": "unispend",
-    "href": "https://unispend.com"
+    "href": "https://unispendtracker.com/"
+  },
+  {
+    "title": "SynthrixAi",
+    "description": "An offer marketplace where every purchase unlocks redeemable bonus points, with tiered rewards, a recycling flow for unused offers and a live earnings dashboard.",
+    "tags": [
+      "Laravel",
+      "Vue.js",
+      "PostgreSQL"
+    ],
+    "image": "synthrixai",
+    "href": "https://synthrxai.xyz/"
   },
   {
     "title": "ChopExpress",
@@ -63,62 +63,7 @@
       "Prisma"
     ],
     "image": "chopexpress",
-    "href": "https://chopexpress.com"
-  },
-  {
-    "title": "Betro Furniture",
-    "description": "A furniture commerce store with catalogue search, collections, wishlists, discounts and a full returns flow, built for a Nigerian retail brand.",
-    "tags": [
-      "WordPress",
-      "WooCommerce",
-      "PHP"
-    ],
-    "image": "betro-ng",
-    "href": "https://betro.ng"
-  },
-  {
-    "title": "Ikebest Technologies",
-    "description": "A multi-service site covering solar energy, CCTV security, real estate and smart home, with quote requests routed per service line.",
-    "tags": [
-      "Next.js",
-      "TypeScript",
-      "Tailwind"
-    ],
-    "image": "ikebest-com",
-    "href": "https://ikebest.com"
-  },
-  {
-    "title": "Tororo Girls' School",
-    "description": "A school platform for a Ugandan secondary school, pairing admissions and news with an e-report system students and parents log into.",
-    "tags": [
-      "Laravel",
-      "MySQL",
-      "Alpine.js"
-    ],
-    "image": "tororo-girls-school-uganda",
-    "href": "https://tororogirlsschool.ac.ug"
-  },
-  {
-    "title": "BZ De Great",
-    "description": "A property investment site for a homes and properties firm, with a listings portfolio and consultation booking as the primary conversion.",
-    "tags": [
-      "Next.js",
-      "Node.js",
-      "PostgreSQL"
-    ],
-    "image": "bzdegreat",
-    "href": "https://bzdegreat.com"
-  },
-  {
-    "title": "Hyssopus Magazine",
-    "description": "A digital magazine with an article library, back issues, saved reading and a subscription flow for a faith-based publication.",
-    "tags": [
-      "Next.js",
-      "NestJS",
-      "PostgreSQL"
-    ],
-    "image": "hyssopusmagazine",
-    "href": "https://hyssopusmagazine.com"
+    "href": "https://chopexpressapp.com/"
   },
   {
     "title": "King's Throne",
@@ -129,7 +74,57 @@
       "MySQL"
     ],
     "image": "rccgkt",
-    "href": "https://rccgkt.org"
+    "href": "https://www.rccgkingsthrone.com/"
+  },
+  {
+    "title": "Betro Furniture",
+    "description": "A furniture commerce store with catalogue search, collections, wishlists, discounts and a full returns flow, built for a Nigerian retail brand.",
+    "tags": [
+      "WordPress",
+      "WooCommerce",
+      "PHP"
+    ],
+    "image": "betro-ng"
+  },
+  {
+    "title": "Ikebest Technologies",
+    "description": "A multi-service site covering solar energy, CCTV security, real estate and smart home, with quote requests routed per service line.",
+    "tags": [
+      "Next.js",
+      "TypeScript",
+      "Tailwind"
+    ],
+    "image": "ikebest-com"
+  },
+  {
+    "title": "Tororo Girls' School",
+    "description": "A school platform for a Ugandan secondary school, pairing admissions and news with an e-report system students and parents log into.",
+    "tags": [
+      "Laravel",
+      "MySQL",
+      "Alpine.js"
+    ],
+    "image": "tororo-girls-school-uganda"
+  },
+  {
+    "title": "BZ De Great",
+    "description": "A property investment site for a homes and properties firm, with a listings portfolio and consultation booking as the primary conversion.",
+    "tags": [
+      "Next.js",
+      "Node.js",
+      "PostgreSQL"
+    ],
+    "image": "bzdegreat"
+  },
+  {
+    "title": "Hyssopus Magazine",
+    "description": "A digital magazine with an article library, back issues, saved reading and a subscription flow for a faith-based publication.",
+    "tags": [
+      "Next.js",
+      "NestJS",
+      "PostgreSQL"
+    ],
+    "image": "hyssopusmagazine"
   },
   {
     "title": "Afobaino Films",
@@ -139,8 +134,7 @@
       "GSAP",
       "Vercel"
     ],
-    "image": "afobianofilms",
-    "href": "https://afobainofilms.com"
+    "image": "afobianofilms"
   },
   {
     "title": "Your Next Project",
@@ -148,7 +142,6 @@
     "tags": [
       "Available now"
     ],
-    "image": "your-next-project",
-    "href": "mailto:akintoyenelson@gmail.com"
+    "image": "your-next-project"
   }
 ]
