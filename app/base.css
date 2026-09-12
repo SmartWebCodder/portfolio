@@ -1,0 +1,20 @@
+/* Page-level defaults. Everything else comes from the two lifted stylesheets. */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background: #111111;
+  color: #ffffff;
+  font-family: "Space Grotesk", "Space Grotesk Placeholder", sans-serif;
+  overflow-x: hidden;
+}
+
+::selection { background: #ff7a2f; color: #111111; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}

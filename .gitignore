@@ -1,0 +1,15 @@
+node_modules/
+.next/
+out/
+build/
+
+.DS_Store
+*.log
+.env*.local
+
+# Lift pipeline intermediates. .lift/src holds the template exports the
+# pipeline reads and is committed, so the generated code is reproducible.
+.lift/*
+!.lift/src/
+__pycache__/
+*.pyc
