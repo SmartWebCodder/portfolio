@@ -1,0 +1,126 @@
+/* ===========================================================================
+   Hand-written. Loaded after the two generated template stylesheets.
+
+   Covers the parts Framer's runtime used to handle (tickers, scroll reveals)
+   plus the places this site diverges from the templates.
+   =========================================================================== */
+
+:root {
+  --accent: #ff7a2f;
+  --ease: cubic-bezier(0.44, 0, 0.56, 1);
+}
+
+/* --- Wordmark -------------------------------------------------------------
+   The template's logo is a fixed 120x42 image box that clips longer names, so
+   the box sizes to the text instead.
+   ------------------------------------------------------------------------- */
+.brand-mark {
+  width: auto !important;
+  height: auto !important;
+  aspect-ratio: auto !important;
+  overflow: visible !important;
+}
+
+.brand-mark__text {
+  font-family: "Space Grotesk", "Space Grotesk Placeholder", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #fff;
+}
+
+/* --- Hero contact rows: icons in place of the template's "E" / "T" --------- */
+.hero-icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  stroke: var(--accent);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* --- Lifted Fastfolio sections --------------------------------------------
+   Devsync's <main> is a centred column flex container, so a child with no
+   width shrinks to its content and the section collapses above mobile.
+   ------------------------------------------------------------------------- */
+.lifted { width: 100%; }
+
+/* --- Tickers --------------------------------------------------------------
+   Each track holds its items twice, so translating by exactly half the track
+   (plus the one gap between the halves) loops seamlessly.
+   ------------------------------------------------------------------------- */
+.ds-marquee__track,
+.ds-slider__track {
+  width: max-content !important;
+  will-change: transform;
+  opacity: 1 !important;
+}
+
+.ds-marquee__track { animation: ds-marquee 32s linear infinite; }
+.ds-slider__track { animation: ds-marquee 90s linear infinite; }
+.ds-slider__track:hover { animation-play-state: paused; }
+
+.ds-marquee__track > li,
+.ds-slider__track > li { opacity: 1 !important; }
+
+.ds-marquee__track h2 { white-space: nowrap; }
+
+@keyframes ds-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-50% - 5px)); }
+}
+
+/* --- Scroll reveal, in place of Framer's appear animations ---------------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease),
+              filter 0.7s var(--ease);
+}
+
+[data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+[data-char] {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(10px);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease),
+              filter 0.5s var(--ease);
+  transition-delay: calc(var(--char-i, 0) * 16ms);
+}
+
+[data-char].is-in {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+
+.ds-marquee__track [data-reveal],
+.ds-slider__track [data-reveal],
+.ds-marquee__track [data-char],
+.ds-slider__track [data-char] {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal],
+  [data-char] {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .ds-marquee__track,
+  .ds-slider__track { animation: none !important; }
+}
