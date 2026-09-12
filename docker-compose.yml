@@ -1,13 +1,13 @@
 # Matches the pattern the other sites on this host use: a container on the
 # shared `web` network, with Caddy reverse-proxying to it by name.
+#
+# The image builds the site itself, so the host needs only Docker.
 services:
   portfolio:
-    image: nginx:alpine
+    build: .
+    image: portfolio:latest
     container_name: portfolio_app
     restart: unless-stopped
-    volumes:
-      - ./out:/usr/share/nginx/html:ro
-      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
       - web
 
