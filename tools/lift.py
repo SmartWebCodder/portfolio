@@ -2,6 +2,7 @@
 """Lift the three Fastfolio sections, swap the template's copy for Nelson's."""
 import re, os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from htmlutil import element_at
 from tojsx import convert
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -134,7 +135,38 @@ def build_testimonials():
         h = re.sub(r'src="https://framerusercontent\.com/images/%s[^"]*"' % re.escape(a),
                    'src="/avatars/a%d.png"' % i, h)
     h = h.replace('Snilloc', 'Nelson')
-    return h
+    return tag_tickers(h)
+
+def tag_tickers(html):
+    """Drive the testimonial rows from CSS.
+
+    Framer's Ticker is animated by its runtime. The markup stays; each track
+    gets a class and a duplicated run so CSS can translate it by exactly half
+    its width, and the row the template marks "reverse" runs the other way.
+    """
+    reverse = set(re.findall(
+        r'class="(framer-[a-z0-9]+)"(?=(?:(?!class=)[\s\S]){0,600}?'
+        r'tickereffectdirectionmodifier="reverse")', html))
+
+    out, i, n = [], 0, 0
+    for m in re.finditer(r'<ul role="group" style="([^"]*)">', html):
+        span = element_at(html, m.start())
+        items = html[span[0]:span[1]]
+        owner = re.findall(r'class="(framer-[a-z0-9]+)"', html[:m.start()])
+        direction = 'reverse' if owner and owner[-1] in reverse else 'forward'
+        style = (m.group(1)
+                 .replace('opacity:0;', '')
+                 .replace('width:100%;', 'width:max-content;')
+                 .replace('transform:translateX(-20px)', 'transform:none'))
+        out.append(html[i:m.start()])
+        out.append('<ul role="group" class="ff-ticker__track ff-ticker__track--%s" '
+                   'style="%s">%s%s</ul>' % (direction, style, items, items))
+        i = span[2]
+        n += 1
+    out.append(html[i:])
+    print('  testimonial tickers tagged:', n)
+    return ''.join(out)
+
 
 BUILDERS = {
     'SkillsSection': ('skills', build_skills),

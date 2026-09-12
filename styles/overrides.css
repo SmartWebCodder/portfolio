@@ -32,7 +32,16 @@
   color: #fff;
 }
 
-/* --- Hero contact rows: icons in place of the template's "E" / "T" --------- */
+/* --- Hero -----------------------------------------------------------------
+   The template's portrait is a full-bleed photo; this one is a cut-out, so it
+   is contained rather than cropped and anchored to the base of the frame.
+   ------------------------------------------------------------------------- */
+.framer-13u5mb4 img {
+  object-fit: contain !important;
+  object-position: center bottom !important;
+}
+
+/* Contact rows: icons in place of the template's "E" / "T" labels. */
 .hero-icon {
   width: 18px;
   height: 18px;
@@ -43,18 +52,54 @@
   stroke-linejoin: round;
 }
 
+/* The email is one string; the template's row was narrow enough to wrap it. */
+.framer-i1cyzr,
+.framer-i1cyzr + div,
+.hero-icon + div {
+  white-space: nowrap;
+}
+
+.framer-1b1h37u {
+  margin-right: 6px;
+}
+
+/* --- About band -----------------------------------------------------------
+   The ticker was absolutely positioned against the image stack that used to
+   scrub under a sticky frame. With the stack gone it has to sit in flow, or
+   the band collapses to its padding and leaves a gap above the skills.
+   ------------------------------------------------------------------------- */
+.framer-1gadbee {
+  padding: 0 !important;
+}
+
+.framer-l7rb0p {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+}
+
 /* --- Lifted Fastfolio sections --------------------------------------------
    Devsync's <main> is a centred column flex container, so a child with no
    width shrinks to its content and the section collapses above mobile.
    ------------------------------------------------------------------------- */
 .lifted { width: 100%; }
 
+/* The testimonial rows carry a left/right fade; the surrounding sections are
+   not the same colour, so it reads as a shadow. */
+.framer-gq19hk,
+.framer-x8ddw2 {
+  -webkit-mask: none !important;
+  mask: none !important;
+}
+
 /* --- Tickers --------------------------------------------------------------
    Each track holds its items twice, so translating by exactly half the track
    (plus the one gap between the halves) loops seamlessly.
    ------------------------------------------------------------------------- */
 .ds-marquee__track,
-.ds-slider__track {
+.ds-slider__track,
+.ff-ticker__track {
   width: max-content !important;
   will-change: transform;
   opacity: 1 !important;
@@ -62,16 +107,60 @@
 
 .ds-marquee__track { animation: ds-marquee 32s linear infinite; }
 .ds-slider__track { animation: ds-marquee 90s linear infinite; }
-.ds-slider__track:hover { animation-play-state: paused; }
+
+.ff-ticker__track--forward { animation: ff-ticker 60s linear infinite; }
+.ff-ticker__track--reverse { animation: ff-ticker 60s linear infinite reverse; }
+
+.ds-slider__track:hover,
+.ff-ticker__track:hover { animation-play-state: paused; }
 
 .ds-marquee__track > li,
-.ds-slider__track > li { opacity: 1 !important; }
+.ds-slider__track > li,
+.ff-ticker__track > li { opacity: 1 !important; }
 
 .ds-marquee__track h2 { white-space: nowrap; }
 
 @keyframes ds-marquee {
   from { transform: translateX(0); }
   to { transform: translateX(calc(-50% - 5px)); }
+}
+
+@keyframes ff-ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-50% - 10px)); }
+}
+
+/* --- Project cards --------------------------------------------------------
+   Screenshots are lazy-loaded, so the frame shows a shimmer until one paints.
+   ------------------------------------------------------------------------- */
+.framer-phe2jm {
+  background: linear-gradient(
+    100deg,
+    #1c1c1c 20%,
+    #2a2a2a 40%,
+    #1c1c1c 60%
+  );
+  background-size: 220% 100%;
+  animation: card-shimmer 1.4s ease-in-out infinite;
+}
+
+.framer-phe2jm img {
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+}
+
+.framer-phe2jm img.is-loaded {
+  opacity: 1;
+}
+
+.framer-phe2jm:has(img.is-loaded) {
+  background: none;
+  animation: none;
+}
+
+@keyframes card-shimmer {
+  from { background-position: 140% 0; }
+  to { background-position: -40% 0; }
 }
 
 /* --- Scroll reveal, in place of Framer's appear animations ---------------- */
@@ -105,8 +194,10 @@
 
 .ds-marquee__track [data-reveal],
 .ds-slider__track [data-reveal],
+.ff-ticker__track [data-reveal],
 .ds-marquee__track [data-char],
-.ds-slider__track [data-char] {
+.ds-slider__track [data-char],
+.ff-ticker__track [data-char] {
   opacity: 1;
   filter: none;
   transform: none;
@@ -122,5 +213,7 @@
   }
 
   .ds-marquee__track,
-  .ds-slider__track { animation: none !important; }
+  .ds-slider__track,
+  .ff-ticker__track,
+  .framer-phe2jm { animation: none !important; }
 }

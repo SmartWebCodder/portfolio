@@ -13,3 +13,8 @@ build/
 !.lift/src/
 __pycache__/
 *.pyc
+
+# Original project screenshots (~59MB). public/projects holds the
+# web-sized WebP the site actually ships; re-run tools/optimize_images.py
+# against these to regenerate them.
+projects/

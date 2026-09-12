@@ -1,0 +1,65 @@
+[
+  {
+    "title": "Paysnap",
+    "description": "A licensed fintech platform for paying bills, buying gift cards and moving value instantly, with a mobile app on both stores and a web presence behind it.",
+    "tags": ["Next.js", "NestJS", "PostgreSQL"],
+    "image": "paysnap",
+    "href": "https://paysnap.ng"
+  },
+  {
+    "title": "ChopExpress",
+    "description": "A multi-tenant food delivery platform handling high-concurrency rider, business and order workflows, with live order tracking and app distribution.",
+    "tags": ["Node.js", "PostgreSQL", "Prisma"],
+    "image": "chopexpress",
+    "href": "https://chopexpress.com"
+  },
+  {
+    "title": "Betro Furniture",
+    "description": "A furniture commerce store with catalogue search, collections, wishlists, discounts and a full returns flow, built for a Nigerian retail brand.",
+    "tags": ["React", "Node.js", "MongoDB"],
+    "image": "betro-ng",
+    "href": "https://betro.ng"
+  },
+  {
+    "title": "Ikebest Technologies",
+    "description": "A multi-service site covering solar energy, CCTV security, real estate and smart home, with quote requests routed per service line.",
+    "tags": ["Next.js", "TypeScript", "Tailwind"],
+    "image": "ikebest-com",
+    "href": "https://ikebest.com"
+  },
+  {
+    "title": "Tororo Girls' School",
+    "description": "A school platform for a Ugandan secondary school, pairing admissions and news with an e-report system students and parents log into.",
+    "tags": ["Laravel", "MySQL", "Alpine.js"],
+    "image": "tororo-girls-school-uganda",
+    "href": "https://tororogirlsschool.ac.ug"
+  },
+  {
+    "title": "BZ De Great",
+    "description": "A property investment site for a homes and properties firm, with a listings portfolio and consultation booking as the primary conversion.",
+    "tags": ["Next.js", "Node.js", "PostgreSQL"],
+    "image": "bzdegreat",
+    "href": "https://bzdegreat.com"
+  },
+  {
+    "title": "Hyssopus Magazine",
+    "description": "A digital magazine with an article library, back issues, saved reading and a subscription flow for a faith-based publication.",
+    "tags": ["Next.js", "NestJS", "PostgreSQL"],
+    "image": "hyssopusmagazine",
+    "href": "https://hyssopusmagazine.com"
+  },
+  {
+    "title": "King's Throne",
+    "description": "A church platform covering ministries, events, media and online giving, with a live-stream entry point and a small merchandise store.",
+    "tags": ["React", "Node.js", "Stripe"],
+    "image": "rccgkt",
+    "href": "https://rccgkt.org"
+  },
+  {
+    "title": "Afobaino Films",
+    "description": "A cinematic portfolio for a wedding videography studio, built around full-bleed film reels and an enquiry flow.",
+    "tags": ["Next.js", "GSAP", "Vercel"],
+    "image": "afobianofilms",
+    "href": "https://afobainofilms.com"
+  }
+]

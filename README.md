@@ -34,8 +34,17 @@ styles/overrides.css    hand-written; the only stylesheet meant to be edited
 tools/                  the lift pipeline
 lib/data.ts             profile, projects, skills
 public/ds/              template images, pulled local
+public/projects/        project screenshots, web-sized WebP
+content/projects.json   the projects the Works grid is built from
 .lift/src/              the two template exports the pipeline reads
 ```
+
+## Images
+
+`tools/optimize_images.py` turns the full-size project screenshots in
+`projects/` into the WebP the site ships (59 MB to 733 KB) and trims the hero
+cut-out to its subject. `projects/` is not committed; `public/projects/` is, so
+a clone builds without it.
 
 ## Regenerating the lifted code
 
@@ -65,5 +74,6 @@ with `DEVSYNC_HTML` / `FASTFOLIO_HTML`.
 
 - The blog section still carries the template's three article titles; there are
   no posts behind them.
+- Project links point at each site's live domain; verify them before shipping.
 - The client logos are still the template's, not actual employers.
 - Testimonials are the Fastfolio template's placeholder quotes and people.
