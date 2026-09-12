@@ -185,6 +185,19 @@
   display: none;
 }
 
+/* --- Process numbers ------------------------------------------------------
+   The template parks the numeral at left:-237px inside a clipping box, so it
+   sat entirely outside its card and never painted. It now bleeds off the left
+   edge the way the design intends, without leaving the card.
+   ------------------------------------------------------------------------- */
+.framer-4ifw17 {
+  left: -16px !important;
+}
+
+.framer-1w651nr {
+  overflow: visible !important;
+}
+
 /* --- Navigation ----------------------------------------------------------
    The template's bar is transparent; this frosts it so the marquee and hero
    do not read through it.
@@ -221,6 +234,9 @@
 /* Card order follows the EarnCash arrangement: the quote leads, the person
    who said it sits underneath. */
 .framer-1lrn6ni { order: -1; }
+
+/* The testimonials sat flush against the clients section. */
+.framer-16qjphs { padding-bottom: 140px !important; }
 
 /* The testimonial rows carry a left/right fade; the surrounding sections are
    not the same colour, so it reads as a shadow. */
