@@ -54,6 +54,26 @@
   object-position: center bottom !important;
 }
 
+/* --- Hero portrait on mobile ----------------------------------------------
+   The template's mobile frame leaves the column half empty between the name
+   and the description, so the portrait fills that band instead of floating
+   small in the middle of it.
+
+   This has to sit after the shared .framer-13u5mb4 rule above: both carry
+   !important, so source order decides.
+   ------------------------------------------------------------------------- */
+@media (max-width: 809px) {
+  .framer-13u5mb4 {
+    width: 100% !important;
+    max-width: 480px !important;
+    height: auto !important;
+    aspect-ratio: 1072 / 1003 !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
+}
+
 /* Contact rows: icons in place of the template's "E" / "T" labels. */
 .hero-icon {
   width: 18px;
@@ -106,7 +126,7 @@
   display: grid;
   place-items: center;
   padding: 24px;
-  background: #0d0d0d;
+  background: #000000;
   transition: opacity 0.5s var(--ease), visibility 0.5s var(--ease);
 }
 
@@ -124,10 +144,10 @@
   width: min(560px, 100%);
 }
 
+/* the artwork carries its own glow on transparency: no frame, no radius */
 .loader__art {
   width: 100%;
   height: auto;
-  border-radius: 14px;
 }
 
 .loader__bar {

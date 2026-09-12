@@ -5,7 +5,7 @@ Project screenshots are handled by tools/mockups.py. Reads its originals from
 projects/, which is not committed.
 """
 import os
-from PIL import Image
+from PIL import Image, ImageDraw
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(REPO, 'projects')
@@ -100,11 +100,12 @@ def prepare_loader():
     src = os.path.join(SRC, 'load.png')
     if not os.path.exists(src):
         return
-    img = Image.open(src).convert('RGB')
+    # the artwork is transparent; flattening it onto a colour draws a box
+    img = Image.open(src).convert('RGBA')
     if img.width > 900:
         img = img.resize((900, round(img.height * 900 / img.width)), Image.LANCZOS)
     out = os.path.join(REPO, 'public', 'loader.webp')
-    img.save(out, 'WEBP', quality=84, method=6)
+    img.save(out, 'WEBP', quality=88, method=6, lossless=False)
     print('%-34s %7.1f MB -> %6.0f KB' % (
         'loader.webp', os.path.getsize(src) / 1e6, os.path.getsize(out) / 1e3))
 
@@ -135,3 +136,31 @@ def prepare_social_card():
 
 
 prepare_social_card()
+
+
+def peace_favicon():
+    """A peace sign, drawn rather than cropped from a photo."""
+    size = 512
+    img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+
+    accent = (255, 122, 47, 255)
+    pad = round(size * 0.06)
+    stroke = round(size * 0.075)
+
+    d.ellipse([pad, pad, size - pad, size - pad], fill=(17, 17, 17, 255))
+    d.ellipse([pad, pad, size - pad, size - pad], outline=accent, width=stroke)
+
+    cx = cy = size / 2
+    r = (size - pad * 2) / 2 - stroke / 2
+    d.line([(cx, cy - r), (cx, cy + r)], fill=accent, width=stroke)
+    for dx in (-1, 1):
+        d.line([(cx, cy), (cx + dx * r * 0.7071, cy + r * 0.7071)],
+               fill=accent, width=stroke)
+
+    out = os.path.join(REPO, 'public', 'favicon.png')
+    img.save(out, 'PNG', optimize=True)
+    print('%-34s %6.0f KB' % ('favicon.png (peace)', os.path.getsize(out) / 1e3))
+
+
+peace_favicon()
