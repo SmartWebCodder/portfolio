@@ -117,6 +117,7 @@ def build_experience():
         # the date follows its (already renamed) title within the same card
         h = re.sub(r'(%s.{0,4000}?)>%s<' % (re.escape(new_t), re.escape(old_d)),
                    lambda m: m.group(1) + '>' + new_d + '<', h, count=6, flags=re.S)
+    h = h.replace('Download My CV', 'Contact Me')
     for variant in ("A summary of my professional journey and the impact I've made",
                     'A summary of my professional journey and the impact I&#x27;ve made',
                     'A summary of my professional journey and the impact I\u2019ve made'):

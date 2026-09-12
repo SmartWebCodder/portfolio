@@ -23,7 +23,7 @@ DS = os.path.join(REPO, '.lift', 'ds')
 GITHUB = 'https://github.com/SmartWebCodder'
 LINKEDIN = 'https://www.linkedin.com/in/akintoye-ayomide-nelson/'
 MAILTO = 'mailto:akintoyenelson@gmail.com'
-CV = '/Akintoye_Ayomide_Nelson_CV.pdf'
+X_URL = 'https://x.com/_NelsonAyo'
 TEL = 'tel:+2348138412167'
 
 # The stats are a Framer code component that counts up from its own runtime.
@@ -37,7 +37,8 @@ STATS = {
 
 # The template's logos are invented brands. These are the real ones, drawn as
 # wordmarks so nothing claims a client that does not exist.
-CLIENTS = ['Betro', 'Unispend', 'SynthrixAi', 'RCCG KT']
+CLIENTS = ['Paysnap', 'Betro', 'Unispend', 'SynthrixAi',
+           'RCCG KT', 'Ikebest', 'Afobaino', 'OBC Ibadan']
 KEEP_CLIENTS = len(CLIENTS)
 DROP_FOOTER_LINKS = {'404', 'PRIVACY POLICY', 'TERM & CONDITION',
                      'PRIVACYPOLICY', 'TERM&CONDITION'}
@@ -55,13 +56,20 @@ PHONE_ICON = (
     '-2.2 2A17 17 0 0 1 3 5.2 2 2 0 0 1 5 3Z"/></svg>')
 
 ROLLING = {
-    'Twitter (X)': 'Email',
-    'CodePen': 'Resume',
-    'CONTRA': 'RESUME',
-    'GITHUB': 'PROJECTS',
+    # hero social row
+    'Twitter (X)': 'X',
+    'CodePen': 'Email',
+    # footer, Portfolio column
+    'CONTRA': 'PROJECTS',
+    'GITHUB': 'GITHUB',
     'CODEPEN': 'EMAIL',
+    # footer, Social column
     'INSTAGRAM': 'GITHUB',
-    'TWITTER “X”': 'X.COM',
+    'TWITTER “X”': 'X',
+    # buttons
+    'My Resume': 'Contact Me',
+    'Start Project': 'Contact Me',
+    'Hire Me': 'Contact Me',
 }
 
 TEXT = {
@@ -88,6 +96,9 @@ TEXT = {
     'Stack Overflow': 'Prisma',
 
     'Clients Worldwide': 'Teams Worldwide',
+    'Start Project': 'Contact Me',
+    'Hire Me ': 'Contact Me',
+    'Hire Me': 'Contact Me',
     'Protfolio': 'Portfolio',
 
     'Working with Bruno Simon was one of the best decisions we made for our web '
@@ -108,14 +119,14 @@ HREFS = {
     'legal/privacy-policy.html': '#top',
     'legal/terms-conditions.html': '#top',
 
-    'https://twitter.com/?lang=en': MAILTO,
+    'https://twitter.com/?lang=en': X_URL,
     'https://www.linkedin.com/': LINKEDIN,
     'https://github.com/': GITHUB,
-    'https://codepen.io/': CV,
-    'https://contra.com/': CV,
+    'https://codepen.io/': MAILTO,
+    'https://contra.com/': '#explore',
     'https://stackoverflow.com/': GITHUB,
     'https://www.instagram.com/': GITHUB,
-    'https://read.cv/explore': CV,
+    'https://read.cv/explore': MAILTO,
 
     'mailto:brunosimon@gmail.com': MAILTO,
     'mailto:info@brunosimon.com': MAILTO,
@@ -434,7 +445,14 @@ def rewrite_links(page):
         r'href="([^"#][^"]*)"',
         lambda m: 'href="%s"' % HREFS.get(m.group(1), m.group(1)), page)
     print('hrefs rewritten:', n)
-    return page.replace('id="explore "', 'id="explore"')
+    page = page.replace('id="explore "', 'id="explore"')
+
+    # the CV is not published, so nothing should link to it
+    page, dropped = re.subn(r'href="/Akintoye_Ayomide_Nelson_CV\.pdf"',
+                            'href="%s"' % MAILTO, page)
+    if dropped:
+        print('resume links repointed:', dropped)
+    return page
 
 
 def recolour(page):

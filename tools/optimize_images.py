@@ -95,17 +95,12 @@ recolour_footer_glow()
 
 
 def prepare_loader():
-    """Crop the progress bar and percentage out of the loader artwork.
-
-    The bar in the image is fixed at 72%; the page draws a real one instead, so
-    only the scene is kept.
-    """
-    src = os.path.join(REPO, 'loader.png')
+    """Size the loader artwork for the web. It already ships without a bar; the
+    page draws a real one underneath it."""
+    src = os.path.join(SRC, 'load.png')
     if not os.path.exists(src):
         return
     img = Image.open(src).convert('RGB')
-    keep = round(img.height * 0.77)          # everything above the bar
-    img = img.crop((0, 0, img.width, keep))
     if img.width > 900:
         img = img.resize((900, round(img.height * 900 / img.width)), Image.LANCZOS)
     out = os.path.join(REPO, 'public', 'loader.webp')
@@ -115,3 +110,28 @@ def prepare_loader():
 
 
 prepare_loader()
+
+
+def prepare_social_card():
+    """Build the 1200x630 card link previews use."""
+    src = os.path.join(SRC, 'seo.png')
+    if not os.path.exists(src):
+        return
+    img = Image.open(src).convert('RGB')
+
+    target = 1200 / 630
+    if img.width / img.height > target:
+        w = round(img.height * target)
+        img = img.crop(((img.width - w) // 2, 0, (img.width - w) // 2 + w, img.height))
+    else:
+        h = round(img.width / target)
+        img = img.crop((0, 0, img.width, h))
+
+    img = img.resize((1200, 630), Image.LANCZOS)
+    out = os.path.join(REPO, 'public', 'og.jpg')
+    img.save(out, 'JPEG', quality=86, optimize=True, progressive=True)
+    print('%-34s %7.1f MB -> %6.0f KB' % (
+        'og.jpg', os.path.getsize(src) / 1e6, os.path.getsize(out) / 1e3))
+
+
+prepare_social_card()

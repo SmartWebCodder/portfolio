@@ -7,8 +7,8 @@ export const profile = {
   location: "Lagos, Nigeria",
   github: "https://github.com/SmartWebCodder",
   linkedin: "https://www.linkedin.com/in/akintoye-ayomide-nelson/",
-  cv: "/Akintoye_Ayomide_Nelson_CV.pdf",
-  photo: "/nelson.png",
+  x: "https://x.com/_NelsonAyo",
+  photo: "/nelson.webp",
   intro:
     "I craft fast, scalable, and user-friendly web applications with modern JavaScript frameworks — combining React and Next.js on the frontend with robust server-side systems in Node.js, NestJS and PostgreSQL.",
   about:
@@ -18,6 +18,7 @@ export const profile = {
 export const socials = [
   { label: "GitHub", href: profile.github },
   { label: "LinkedIn", href: profile.linkedin },
+  { label: "X", href: profile.x },
   { label: "Email", href: `mailto:${profile.email}` },
 ];
 
