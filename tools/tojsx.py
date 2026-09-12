@@ -111,11 +111,18 @@ def split_decl(d):
             return d[:i], d[i+1:]
     return None, None
 
-# Framer's runtime drives these; without it the element would stay invisible.
-HIDE_PROPS = {'opacity', 'transform', 'will-change', 'visibility', 'filter'}
-
 def style_to_obj(style, strip_hidden=True):
-    obj, hidden = {}, False
+    """Convert an inline style to a JSX style object.
+
+    Framer's runtime animates elements in from a hidden state. Without it those
+    inline values would stick, so a hidden element is reported back to the
+    caller and its entrance offset dropped.
+
+    An element counts as hidden only when it is actually invisible: opacity at
+    zero, or a blur filter. A bare transform is layout (translateY(-50%) to
+    centre a number, translate(-50%) to centre a portrait) and must be kept.
+    """
+    decls = []
     for d in split_decls(style):
         if not d.strip():
             continue
@@ -123,34 +130,34 @@ def style_to_obj(style, strip_hidden=True):
         if prop is None:
             continue
         prop, val = prop.strip().lower(), val.strip()
-        # strip CSS comments Framer embeds in token values
         val = re.sub(r'/\*.*?\*/', '', val, flags=re.S).strip()
-        if not val:
-            continue
-        if strip_hidden and prop in HIDE_PROPS:
+        if val:
+            decls.append((prop, val))
+
+    hidden = False
+    if strip_hidden:
+        for prop, val in decls:
             if prop == 'opacity':
                 try:
                     if float(val) < 0.05:
                         hidden = True
-                        continue
                 except ValueError:
                     pass
-            elif prop == 'transform':
-                if val != 'none':
-                    hidden = True
-                continue
-            elif prop == 'will-change':
-                continue
-            elif prop == 'filter':
-                # Framer's split-text blur-in; without the runtime it never clears.
-                if 'blur' in val:
-                    hidden = True
-                    continue
+            elif prop == 'filter' and 'blur' in val:
+                hidden = True
             elif prop == 'visibility' and val == 'hidden':
                 hidden = True
+
+    obj = {}
+    for prop, val in decls:
+        if strip_hidden:
+            if prop == 'will-change':
+                continue
+            if hidden and prop in ('opacity', 'transform', 'filter', 'visibility'):
                 continue
         obj[css_prop_to_js(prop)] = val
     return obj, hidden
+
 
 def obj_to_jsx(obj):
     parts = []

@@ -70,8 +70,13 @@ def children_of(s, start):
 
 
 def plain(s):
-    """The visible text of a fragment."""
+    """The visible text of a fragment.
+
+    Framer inlines a <style> block next to some components; its rules are not
+    text, so strip those elements whole rather than just their tags.
+    """
     s = re.sub(r'<!--.*?-->', '', s, flags=re.S)
+    s = re.sub(r'<(style|script)\b[^>]*>.*?</\1>', '', s, flags=re.S | re.I)
     return H.unescape(re.sub(r'<[^>]+>', '', s)).strip()
 
 
@@ -122,3 +127,18 @@ def retext(page, mapping):
         out.append(page[i:m.end()])
         i = m.end()
     return ''.join(out), hits
+
+
+def strip_em_dashes(html):
+    """Replace em dashes in text nodes only, leaving attributes and CSS alone."""
+    def one(m):
+        text = m.group(1)
+        if '\u2014' not in text:
+            return m.group(0)
+        # " — " joins clauses and reads better as a comma; a bare em dash
+        # between words is a hyphen.
+        text = re.sub(r' \u2014 ', ', ', text)
+        text = text.replace('\u2014', '-')
+        return '>' + text + '<'
+
+    return re.sub(r'>([^<]*)<', one, html)
