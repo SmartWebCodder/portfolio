@@ -17,3 +17,6 @@ __pycache__/
 # Original screenshots and the untrimmed portrait (~62MB). Anchored to the
 # repo root so it does not also match public/projects, which is committed.
 /projects/
+
+# Static export output
+out/
