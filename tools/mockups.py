@@ -22,6 +22,17 @@ DEEP = (74, 22, 2)
 MID = (214, 92, 20)
 LIGHT = (255, 205, 165)
 
+# app screenshots, two per project
+MOBILE = {
+    'paysnap-app': ('paysnap2.jpeg', 'paysnap1.jpeg'),
+    'chopexpress-app': ('chopexpress1.png', 'chopexpress-2.png'),
+    'kimo-games': ('kimo-1.jpeg', 'kimo2.jpeg'),
+}
+
+# sources that are not standalone project screenshots
+SKIP = {'nelson.png', 'load.png', 'seo.png'} | {
+    n for names in MOBILE.values() for n in names}
+
 BEZEL = (28, 28, 30)
 BODY = (176, 178, 184)
 BODY_EDGE = (128, 130, 136)
@@ -156,11 +167,73 @@ def placeholder_screen(size):
     return img
 
 
+def phone(shot, height):
+    """One phone, drawn around a screenshot, on transparency."""
+    screen_w = round(height * 0.455)
+    screen_h = round(height * 0.955)
+    bezel = max(6, round(height * 0.011))
+    w = screen_w + bezel * 2
+    h = screen_h + bezel * 2
+    radius = round(w * 0.13)
+
+    body = rounded((w, h), radius, (24, 24, 27, 255))
+    d = ImageDraw.Draw(body)
+    d.rounded_rectangle([0, 0, w - 1, h - 1], radius=radius,
+                        outline=(58, 58, 64, 255), width=max(2, bezel // 3))
+
+    ratio = max(screen_w / shot.width, screen_h / shot.height)
+    fitted = shot.resize(
+        (math.ceil(shot.width * ratio), math.ceil(shot.height * ratio)),
+        Image.LANCZOS)
+    fitted = fitted.crop((
+        (fitted.width - screen_w) // 2, 0,
+        (fitted.width - screen_w) // 2 + screen_w, screen_h))
+
+    mask = rounded((screen_w, screen_h), round(radius * 0.8),
+                   (255, 255, 255, 255)).getchannel('A')
+    body.paste(fitted.convert('RGB'), (bezel, bezel), mask)
+
+    # dynamic island
+    island_w, island_h = round(screen_w * 0.3), round(screen_h * 0.022)
+    ImageDraw.Draw(body).rounded_rectangle(
+        [(w - island_w) / 2, bezel + island_h * 0.5,
+         (w + island_w) / 2, bezel + island_h * 1.5],
+        radius=island_h, fill=(12, 12, 14, 255))
+
+    return body
+
+
+def phones(shots, canvas=CANVAS):
+    """Two app screens, angled, on the same backdrop the laptops use."""
+    w, h = canvas
+    scene = backdrop(canvas).convert('RGBA')
+
+    height = round(h * 0.86)
+    angles = (-9, 9)
+    offsets = (-0.155, 0.155)
+    lifts = (0.04, -0.02)
+
+    for shot, angle, dx, lift in zip(shots, angles, offsets, lifts):
+        device = phone(shot, height).rotate(angle, resample=Image.BICUBIC,
+                                            expand=True)
+        x = round(w / 2 + w * dx - device.width / 2)
+        y = round(h / 2 + h * lift - device.height / 2)
+
+        shadow = Image.new('RGBA', canvas, (0, 0, 0, 0))
+        shadow.paste(Image.new('RGBA', device.size, (20, 8, 0, 120)),
+                     (x + 14, y + 26), device.getchannel('A'))
+        scene.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(24)))
+        scene.alpha_composite(device, (x, y))
+
+    return scene.convert('RGB')
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     total = 0
     for name in sorted(os.listdir(SRC)):
-        if not name.lower().endswith(('.png', '.jpg', '.jpeg')) or name == 'nelson.png':
+        if (not name.lower().endswith(('.png', '.jpg', '.jpeg'))
+                or name in SKIP):
             continue
         slug = os.path.splitext(name)[0].lower().replace('.', '-').replace('_', '-')
         shot = Image.open(os.path.join(SRC, name)).convert('RGB')
@@ -169,6 +242,13 @@ def main():
         size = os.path.getsize(out)
         total += size
         print('%-34s %6.0f KB' % (slug, size / 1e3))
+    for slug, names in MOBILE.items():
+        shots = [Image.open(os.path.join(SRC, n)).convert('RGB') for n in names]
+        out = os.path.join(OUT, slug + '.webp')
+        phones(shots).save(out, 'WEBP', quality=QUALITY, method=6)
+        total += os.path.getsize(out)
+        print('%-34s %6.0f KB' % (slug, os.path.getsize(out) / 1e3))
+
     slot = laptop(placeholder_screen((2560, 1600)))
     out = os.path.join(OUT, 'your-next-project.webp')
     slot.save(out, 'WEBP', quality=QUALITY, method=6)

@@ -11,6 +11,17 @@
     "href": "https://www.thepaysnap.com/"
   },
   {
+    "title": "Paysnap App",
+    "description": "The Paysnap mobile wallet: fund and withdraw, trade gift cards, buy airtime and data, settle bills and request money, with referrals and live rates.",
+    "tags": [
+      "React Native",
+      "NestJS",
+      "PostgreSQL"
+    ],
+    "image": "paysnap-app",
+    "href": "https://www.thepaysnap.com/"
+  },
+  {
     "title": "Tredi Books",
     "description": "A business platform for multi-shop retailers: stock, sales, expenses, customers and sales reps in one place, with apps on both stores.",
     "tags": [
@@ -31,6 +42,16 @@
     ],
     "image": "onlicense",
     "href": "https://license.smarthubinnovation.com/"
+  },
+  {
+    "title": "Kimo Games",
+    "description": "A play-and-earn gaming app with a coin wallet, cash balance, tournaments with live countdowns, leaderboards and a rewards store.",
+    "tags": [
+      "React Native",
+      "NestJS",
+      "Redis"
+    ],
+    "image": "kimo-games"
   },
   {
     "title": "Unispend",
@@ -63,6 +84,17 @@
       "Prisma"
     ],
     "image": "chopexpress",
+    "href": "https://chopexpressapp.com/"
+  },
+  {
+    "title": "ChopExpress App",
+    "description": "The rider and customer app for the delivery platform: browse vendors, place an order and follow it through packing, transit and drop-off in real time.",
+    "tags": [
+      "Flutter",
+      "Node.js",
+      "PostgreSQL"
+    ],
+    "image": "chopexpress-app",
     "href": "https://chopexpressapp.com/"
   },
   {

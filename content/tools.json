@@ -1,19 +1,78 @@
 [
-  { "label": "HTML5",       "icon": "/tech/html.svg" },
-  { "label": "CSS3",        "icon": "/tech/css.svg" },
-  { "label": "JavaScript",  "icon": "/tech/javascript.png" },
-  { "label": "TypeScript",  "icon": "/tech/typescript.png" },
-  { "label": "React",       "icon": "/tech/react.png" },
-  { "label": "Next.js",     "icon": "/tech/nextjs.webp" },
-  { "label": "TailwindCSS", "icon": "/tech/tailwindcss.png" },
-  { "label": "Node.js",     "icon": "/tech/nodejs.svg" },
-  { "label": "NestJS",      "icon": "/tech/nestjs.svg" },
-  { "label": "Laravel",     "icon": "/tech/laravel.svg" },
-  { "label": "Golang",      "icon": "/tech/go.svg" },
-  { "label": "Python",      "icon": "/tech/python.svg" },
-  { "label": "WordPress",   "icon": "/tech/wordpress.svg" },
-  { "label": "PostgreSQL",  "icon": "/tech/postgresql.svg" },
-  { "label": "MongoDB",     "icon": "/tech/mongodb.svg" },
-  { "label": "Docker",      "icon": "/tech/docker.svg" },
-  { "label": "Git",         "icon": "/tech/git.svg" }
+  {
+    "label": "HTML5",
+    "icon": "/tech/html.svg"
+  },
+  {
+    "label": "CSS3",
+    "icon": "/tech/css.svg"
+  },
+  {
+    "label": "JavaScript",
+    "icon": "/tech/javascript.png"
+  },
+  {
+    "label": "TypeScript",
+    "icon": "/tech/typescript.png"
+  },
+  {
+    "label": "React",
+    "icon": "/tech/react.png"
+  },
+  {
+    "label": "Next.js",
+    "icon": "/tech/nextjs.webp"
+  },
+  {
+    "label": "TailwindCSS",
+    "icon": "/tech/tailwindcss.png"
+  },
+  {
+    "label": "Flutter",
+    "icon": "/tech/flutter.svg"
+  },
+  {
+    "label": "React Native",
+    "icon": "/tech/reactnative.svg"
+  },
+  {
+    "label": "Node.js",
+    "icon": "/tech/nodejs.svg"
+  },
+  {
+    "label": "NestJS",
+    "icon": "/tech/nestjs.svg"
+  },
+  {
+    "label": "Laravel",
+    "icon": "/tech/laravel.svg"
+  },
+  {
+    "label": "Golang",
+    "icon": "/tech/go.svg"
+  },
+  {
+    "label": "Python",
+    "icon": "/tech/python.svg"
+  },
+  {
+    "label": "WordPress",
+    "icon": "/tech/wordpress.svg"
+  },
+  {
+    "label": "PostgreSQL",
+    "icon": "/tech/postgresql.svg"
+  },
+  {
+    "label": "MongoDB",
+    "icon": "/tech/mongodb.svg"
+  },
+  {
+    "label": "Docker",
+    "icon": "/tech/docker.svg"
+  },
+  {
+    "label": "Git",
+    "icon": "/tech/git.svg"
+  }
 ]
