@@ -1,0 +1,151 @@
+# -*- coding: utf-8 -*-
+"""Lift the three Fastfolio sections, swap the template's copy for Nelson's."""
+import re, os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from tojsx import convert
+
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+FF = os.path.join(REPO, '.lift', 'ff')
+OUT = os.path.join(REPO, 'components', 'lifted')
+os.makedirs(OUT, exist_ok=True)
+
+def read(n):
+    return open(os.path.join(FF, n + '.html'), encoding='utf-8').read()
+
+def sub(html, pairs):
+    """Ordered, whole-string replacements applied to every breakpoint variant."""
+    for old, new in pairs:
+        if old not in html:
+            print('  !! not found:', old[:70])
+        html = html.replace(old, new)
+    return html
+
+# --------------------------------------------------------------------------
+# Skills / "Tools I Build With"
+# --------------------------------------------------------------------------
+TECH = [
+    ('QUMZjLBEaefCugbhkaTAFcprOWQ.svg', 'html logo',       'HTML5',       '/tech/html.svg'),
+    ('CPCoZIHh5IhKplr3oPeQOTLRy4A.svg', 'css logo',        'CSS3',        '/tech/css.svg'),
+    ('U4WwaSswiaWDacNalJbEKDXNj7w.png', 'Javascript logo', 'JavaScript',  '/tech/javascript.png'),
+    ('1XkLbWWmnowcE9PvrezLNvsFZw.png',  'react logo',      'React',       '/tech/react.png'),
+    ('fS4jIkPM7ZdAr12rAtjx7LIbPjg.webp','nextjs logo',     'Next.js',     '/tech/nextjs.webp'),
+    ('dMTyUNYFKn4FNDoOM2XVPeWLI.png',   'redux logo',      'TypeScript',  '/tech/typescript.png'),
+    ('ntr6KUGqNxMQW1AP6w7IPChNIM.png',  'tailwindcss logo','TailwindCSS', '/tech/tailwindcss.png'),
+    ('v4EhMXccLQv14F1b1SCORd1fGck.webp','sass logo',       'Node.js',     '/tech/nodejs.svg'),
+    ('JcVzC5vItQ6wJkBzEGg0u5viZyw.png', 'GSAP logo',       'NestJS',      '/tech/nestjs.svg'),
+    ('wfmZJb4V5pKZfdVVDZx1fggVXU.png',  'typescript logo', 'PostgreSQL',  '/tech/postgresql.svg'),
+    ('7ke3hIoqfWHE2POE0JDsQleVfbI.svg', 'netlify logo',    'Docker',      '/tech/docker.svg'),
+    ('RMsp0LaPuNuXwPhZgGHJWTPZWLY.svg', 'git logo',        'Git',         '/tech/git.svg'),
+]
+# the labels the template ships with, in the same slot order
+OLD_LABELS = ['HTML5','CSS3','JavaScript','React','Nextjs','Redux','TailwindCSS',
+              'Sass','GSAP','TypeScript','Netlify','Git']
+
+def build_skills():
+    h = read('skills')
+    # Framer emits srcset + src with sizing query params; rewrite the whole attr.
+    for asset, alt, label, local in TECH:
+        h = re.sub(r'srcSet="[^"]*%s[^"]*"' % re.escape(asset), '', h)
+        h = re.sub(r'srcset="[^"]*%s[^"]*"' % re.escape(asset), '', h)
+        h = re.sub(r'src="https://framerusercontent\.com/images/%s[^"]*"' % re.escape(asset),
+                   'src="%s"' % local, h)
+        h = h.replace('alt="%s"' % alt, 'alt="%s"' % label)
+    # labels sit in <p ...>LABEL</p>; replace longest-first so "Git" doesn't hit "GitHub"
+    order = sorted(range(len(OLD_LABELS)), key=lambda i: -len(OLD_LABELS[i]))
+    for i in order:
+        old, new = OLD_LABELS[i], TECH[i][2]
+        h = re.sub(r'(>)%s(</p>)' % re.escape(old), r'\g<1>%s\g<2>' % new, h)
+    h = h.replace(
+        'A curated set of technologies I rely on to build modern web experiences',
+        'The stack I reach for across the whole product — interface, API and data layer')
+    return h
+
+# --------------------------------------------------------------------------
+# Experience / "Where I've Worked"
+# --------------------------------------------------------------------------
+JOBS = [
+    ('Frontend Engineer — Paystack', 'Senior Backend Engineer — Pandar Resources',
+     '2023 — Present', '2026 — Present',
+     ['Built and maintained responsive user interfaces using modern JavaScript frameworks',
+      'Collaborated with designers to deliver clean, user-focused experiences',
+      'Optimized performance and improved page load times across key products'],
+     ['Built API integrations and data pipelines in Node.js, TypeScript and NestJS with MongoDB',
+      'Cut average response times by 60% through connection pooling and query optimisation',
+      'Added structured logging and metrics, speeding up debugging of high-throughput services']),
+    ('Frontend Engineer — Hubtel', 'Senior Backend Engineer — ODJTech Multimedia',
+     '2022 — 2023', '2025 — 2026',
+     ['Built responsive customer-facing interfaces for web products',
+      'Worked closely with product and design teams to improve usability',
+      'Optimized UI performance and reusable component structure'],
+     ['Designed event-driven services in NestJS and TypeScript over high-volume data flows',
+      'Implemented Redis caching strategies that held response times under concurrent load',
+      'Drove reliability work — failure-mode handling and autoscaling for production stability']),
+    ('UI Engineer — Meta', 'Senior Backend Engineer — Unispend',
+     '2021 — 2022', '2025 — 2026',
+     ['Developed polished interface components for internal tools and product experiences',
+      'Improved design consistency across multiple user flows',
+      'Collaborated with cross-functional teams to ship high-quality features'],
+     ['Shipped real-time student wallet top-ups, QR-code payments and transaction tracking',
+      'Built JWT auth with rate limiting, plus analytics dashboards for revenue-sharing models',
+      'Instrumented notification flows and observability for high-concurrency transactions']),
+    ('Frontend Lead — Google', 'Fullstack Engineer — FastPay Tech',
+     '2020 — 2021', '2023 — 2024',
+     ['Crafted scalable web interfaces with a focus on speed and accessibility',
+      'Contributed to clean component systems and maintainable codebases',
+      'Helped refine user experiences through testing and iteration'],
+     ['Built payment interfaces alongside the APIs behind them, owning both ends of the flow',
+      'Designed a real-time webhook system with delivery guarantees for payment notifications',
+      'Reduced manual reconciliation by 40% across high-volume transaction traffic']),
+]
+
+def build_experience():
+    h = read('experience')
+    pairs = []
+    for old_t, new_t, old_d, new_d, old_bs, new_bs in JOBS:
+        pairs.append((old_t, new_t))
+        pairs += list(zip(old_bs, new_bs))
+    # dates repeat across cards, so replace them together with their card title
+    h = sub(h, pairs)
+    for old_t, new_t, old_d, new_d, _, _ in JOBS:
+        # the date follows its (already renamed) title within the same card
+        h = re.sub(r'(%s.{0,4000}?)>%s<' % (re.escape(new_t), re.escape(old_d)),
+                   lambda m: m.group(1) + '>' + new_d + '<', h, count=6, flags=re.S)
+    h = h.replace("A summary of my professional journey and the impact I've made",
+                  "A summary of my professional journey and the impact I've made")
+    h = h.replace('A summary of my professional journey and the impact I&#x27;ve made',
+                  'Seven years of shipping production systems — and the interfaces on top of them')
+    h = h.replace('A summary of my professional journey and the impact I’ve made',
+                  'Seven years of shipping production systems — and the interfaces on top of them')
+    return h
+
+# --------------------------------------------------------------------------
+# Testimonials / "Don't just take my words for it"
+# --------------------------------------------------------------------------
+AVATARS = ['0t1mAkMD8DjLQwkEPKvWPvRdw','BIKrk2jNPbjgqk1KIiOt21i28c',
+           'Ir7RsDIGqdl9NXRsjqxfC8LSeI','fSilKlVeMn7BTOvTYqgkAXZeq8',
+           'plfPyU9U9DxoD47TDqzj1bNU0','wud5asxR22rV2WSRb526VDJgk']
+
+def build_testimonials():
+    h = read('testimonials')
+    for i, a in enumerate(AVATARS, start=1):
+        h = re.sub(r'srcSet="[^"]*%s[^"]*"' % re.escape(a), '', h)
+        h = re.sub(r'srcset="[^"]*%s[^"]*"' % re.escape(a), '', h)
+        h = re.sub(r'src="https://framerusercontent\.com/images/%s[^"]*"' % re.escape(a),
+                   'src="/avatars/a%d.png"' % i, h)
+    h = h.replace('Snilloc', 'Nelson')
+    return h
+
+BUILDERS = {
+    'SkillsSection': ('skills', build_skills),
+    'ExperienceSection': ('experience', build_experience),
+    'TestimonialsSection': ('testimonials', build_testimonials),
+}
+
+for comp, (name, fn) in BUILDERS.items():
+    print('==', comp)
+    html = fn()
+    jsx = convert(html)
+    open(os.path.join(FF, name + '.built.html'), 'w').write(html)
+    open(os.path.join(FF, name + '.built.jsx'), 'w').write(jsx)
+    print('  ->', len(jsx), 'chars jsx')
