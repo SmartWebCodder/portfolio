@@ -97,12 +97,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Fragment+Mono:ital@0;1&family=Inter:wght@100..900&family=Geist+Mono:wght@100..900&display=swap"
-          rel="stylesheet"
-        />
+        {/* Fonts are self-hosted in styles/*.css; this sheet fetched a
+            second copy that nothing used. */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
