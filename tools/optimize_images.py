@@ -92,3 +92,26 @@ def recolour_footer_glow():
 
 
 recolour_footer_glow()
+
+
+def prepare_loader():
+    """Crop the progress bar and percentage out of the loader artwork.
+
+    The bar in the image is fixed at 72%; the page draws a real one instead, so
+    only the scene is kept.
+    """
+    src = os.path.join(REPO, 'loader.png')
+    if not os.path.exists(src):
+        return
+    img = Image.open(src).convert('RGB')
+    keep = round(img.height * 0.77)          # everything above the bar
+    img = img.crop((0, 0, img.width, keep))
+    if img.width > 900:
+        img = img.resize((900, round(img.height * 900 / img.width)), Image.LANCZOS)
+    out = os.path.join(REPO, 'public', 'loader.webp')
+    img.save(out, 'WEBP', quality=84, method=6)
+    print('%-34s %7.1f MB -> %6.0f KB' % (
+        'loader.webp', os.path.getsize(src) / 1e6, os.path.getsize(out) / 1e3))
+
+
+prepare_loader()
