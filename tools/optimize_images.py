@@ -15,6 +15,7 @@ OUT = os.path.join(REPO, 'public', 'projects')
 
 WIDTH = 1280
 QUALITY = 82
+PORTRAIT_WIDTH = 1100
 
 os.makedirs(OUT, exist_ok=True)
 
@@ -39,7 +40,9 @@ def trim_portrait():
     The export carries wide transparent margins and is landscape, so it was
     being cropped oddly inside the hero's portrait frame.
     """
-    src = os.path.join(REPO, 'public', 'nelson.png')
+    src = os.path.join(SRC, 'nelson.png')
+    if not os.path.exists(src):
+        return
     img = Image.open(src)
     if img.mode not in ('RGBA', 'LA'):
         return
@@ -48,8 +51,10 @@ def trim_portrait():
         return
     before = os.path.getsize(src)
     img = img.crop(box)
-    if img.width > 900:
-        img = img.resize((900, round(img.height * 900 / img.width)), Image.LANCZOS)
+    if img.width > PORTRAIT_WIDTH:
+        img = img.resize(
+            (PORTRAIT_WIDTH, round(img.height * PORTRAIT_WIDTH / img.width)),
+            Image.LANCZOS)
     out = os.path.join(REPO, 'public', 'nelson.webp')
     img.save(out, 'WEBP', quality=88, method=6)
     print('%-34s %7.1f MB -> %6.0f KB' % (
@@ -60,7 +65,7 @@ trim_portrait()
 
 total_in = total_out = 0
 for f in sorted(os.listdir(SRC)):
-    if not f.lower().endswith(('.png', '.jpg', '.jpeg')):
+    if not f.lower().endswith(('.png', '.jpg', '.jpeg')) or f == 'nelson.png':
         continue
     a, b = convert(os.path.join(SRC, f), slug(f))
     total_in += a

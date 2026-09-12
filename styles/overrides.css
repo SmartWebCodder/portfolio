@@ -36,6 +36,11 @@
    The template's portrait is a full-bleed photo; this one is a cut-out, so it
    is contained rather than cropped and anchored to the base of the frame.
    ------------------------------------------------------------------------- */
+.framer-13u5mb4 {
+  width: 46% !important;
+  max-width: 620px !important;
+}
+
 .framer-13u5mb4 img {
   object-fit: contain !important;
   object-position: center bottom !important;
@@ -52,15 +57,32 @@
   stroke-linejoin: round;
 }
 
-/* The email is one string; the template's row was narrow enough to wrap it. */
-.framer-i1cyzr,
-.framer-i1cyzr + div,
-.hero-icon + div {
+/* The template sized these rows for a shorter address, so the email wrapped. */
+.framer-7wc2qn,
+.framer-i1cyzr {
+  width: max-content !important;
+  white-space: nowrap;
+}
+
+.framer-7wc2qn > div,
+.framer-i1cyzr > div {
+  width: auto !important;
   white-space: nowrap;
 }
 
 .framer-1b1h37u {
   margin-right: 6px;
+}
+
+/* --- Navigation ----------------------------------------------------------
+   The template's bar is transparent; this frosts it so the marquee and hero
+   do not read through it.
+   ------------------------------------------------------------------------- */
+.framer-ikm3p7 {
+  background-color: rgba(17, 17, 17, 0.55) !important;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* --- About band -----------------------------------------------------------
@@ -164,24 +186,27 @@
 }
 
 /* --- Scroll reveal, in place of Framer's appear animations ---------------- */
+/* `translate` is a separate property from `transform`, so the reveal composes
+   with the template's own transforms instead of overwriting them. Using
+   `transform` here un-centred every element Framer centres with translate(-50%). */
 [data-reveal] {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease),
+  translate: 0 24px;
+  transition: opacity 0.7s var(--ease), translate 0.7s var(--ease),
               filter 0.7s var(--ease);
 }
 
 [data-reveal].is-in {
   opacity: 1;
-  transform: none;
+  translate: none;
 }
 
 [data-char] {
   display: inline-block;
   opacity: 0;
   filter: blur(6px);
-  transform: translateY(10px);
-  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease),
+  translate: 0 10px;
+  transition: opacity 0.5s var(--ease), translate 0.5s var(--ease),
               filter 0.5s var(--ease);
   transition-delay: calc(var(--char-i, 0) * 16ms);
 }
@@ -189,7 +214,7 @@
 [data-char].is-in {
   opacity: 1;
   filter: none;
-  transform: none;
+  translate: none;
 }
 
 .ds-marquee__track [data-reveal],
@@ -200,7 +225,7 @@
 .ff-ticker__track [data-char] {
   opacity: 1;
   filter: none;
-  transform: none;
+  translate: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -208,7 +233,7 @@
   [data-char] {
     opacity: 1 !important;
     filter: none !important;
-    transform: none !important;
+    translate: none !important;
     transition: none !important;
   }
 

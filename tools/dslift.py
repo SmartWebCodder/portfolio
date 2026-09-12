@@ -150,14 +150,31 @@ def localise_images(page):
 
 
 def strip_scroll_jack(page):
-    """Drop the image stack the About band used to scrub under a sticky frame."""
+    """Remove the scroll-jacked image band from the About section.
+
+    Two parts: the image stack itself, and the three empty "scroll animation
+    layer" divs that gave the scrub its travel. The layers are 556px of nothing
+    once the pin is gone, which is what left the gap above the skills.
+    """
     i = page.find('data-framer-name="Image Group"')
-    if i < 0:
-        return page
-    a = page.rfind('<div', 0, i)
-    span = element_at(page, a)
-    print('removed scroll-jack image group:', span[2] - a, 'chars')
-    return page[:a] + page[span[2]:]
+    if i >= 0:
+        a = page.rfind('<div', 0, i)
+        span = element_at(page, a)
+        print('removed scroll-jack image group:', span[2] - a, 'chars')
+        page = page[:a] + page[span[2]:]
+
+    removed = 0
+    for n in (1, 2, 3):
+        marker = 'id="scroll-animation-layer%d"' % n
+        j = page.find(marker)
+        if j < 0:
+            continue
+        a = page.rfind('<div', 0, j)
+        span = element_at(page, a)
+        removed += span[2] - a
+        page = page[:a] + page[span[2]:]
+    print('removed scroll animation layers:', removed, 'chars')
+    return page
 
 
 def swap_wordmark(page):
@@ -177,7 +194,7 @@ def rewrite_rolling_text(page):
     hits = {}
 
     def one(m):
-        spans = span_re.findall(m.group(1))
+        spans = span_re.findall(m.group(2))
         if not spans:
             return m.group(0)
         text = H.unescape(''.join(c for _, c in spans)).replace(' ', ' ')
@@ -190,9 +207,11 @@ def rewrite_rolling_text(page):
         body = ''.join('<span style="%s">%s</span>'
                        % (style, H.escape(c if c != ' ' else ' '))
                        for c in new)
-        return '<p class="rolling-text-inner">%s</p>' % body
+        # Framer emits a per-instance <style> keyed to this exact class name;
+        # keep the hash or the block loses its layout and colour.
+        return '<p class="%s">%s</p>' % (m.group(1), body)
 
-    page = re.sub(r'<p class="rolling-text-inner-[A-Za-z0-9]+">(.*?)</p>',
+    page = re.sub(r'<p class="(rolling-text-inner-[A-Za-z0-9]+)">(.*?)</p>',
                   one, page, flags=re.S)
     print('rolling text rewritten:', hits)
     return page
