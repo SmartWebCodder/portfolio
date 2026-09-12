@@ -36,6 +36,7 @@ export default function Menu() {
 
     const setOpen = (open: boolean) => {
       sheet.hidden = !open;
+      sheet.style.display = open ? "" : "none";
       sheet.classList.toggle("is-open", open);
       document.body.style.overflow = open ? "hidden" : "";
       buttons.forEach((b) => {

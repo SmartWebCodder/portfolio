@@ -35,8 +35,7 @@ export default function Accordion() {
     const setOpen = (card: HTMLElement, open: boolean) => {
       card.classList.toggle(OPEN, open);
       card.classList.toggle(CLOSED, !open);
-      const toggle = card.querySelector<HTMLElement>(".framer-qipdi4");
-      toggle?.setAttribute("aria-expanded", String(open));
+      card.setAttribute("aria-expanded", String(open));
       const body = card.querySelector<HTMLElement>(".framer-fmtgiz");
       if (body) body.hidden = false;
     };
@@ -44,8 +43,10 @@ export default function Accordion() {
     for (const card of cards) {
       setOpen(card, titleOf(card) === firstTitle);
 
-      const toggle = card.querySelector<HTMLElement>(".framer-qipdi4");
-      if (!toggle) continue;
+      // the template only made the chevron interactive; the whole row is the
+      // sensible target, and the chevron stays as the affordance
+      const toggle = card;
+      const chevron = card.querySelector<HTMLElement>(".framer-qipdi4");
 
       toggle.setAttribute("role", "button");
       toggle.setAttribute("tabindex", "0");
@@ -54,6 +55,7 @@ export default function Accordion() {
         `Toggle details for ${titleOf(card) || "this role"}`
       );
       toggle.style.cursor = "pointer";
+      if (chevron) chevron.style.pointerEvents = "none";
 
       const activate = () => {
         const nowOpen = !card.classList.contains(OPEN);
