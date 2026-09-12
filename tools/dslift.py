@@ -35,7 +35,10 @@ STATS = {
     'Completed Projects': 50,
 }
 
-KEEP_CLIENTS = 4
+# The template's logos are invented brands. These are the real ones, drawn as
+# wordmarks so nothing claims a client that does not exist.
+CLIENTS = ['Betro', 'Unispend', 'SynthrixAi', 'RCCG KT']
+KEEP_CLIENTS = len(CLIENTS)
 DROP_FOOTER_LINKS = {'404', 'PRIVACY POLICY', 'TERM & CONDITION',
                      'PRIVACYPOLICY', 'TERM&CONDITION'}
 
@@ -368,7 +371,23 @@ def trim_clients(page):
         keep = KEEP_CLIENTS * per_logo
         if len(kids) > keep:
             page = page[:kids[keep][0]] + page[kids[-1][1]:]
-            trimmed += 1
+
+        # swap each logo's stack of images for the client's name
+        kids = list(children_of(page, grid))
+        out = []
+        for n, (a, b) in enumerate(kids):
+            name = CLIENTS[(n // per_logo) % len(CLIENTS)]
+            cell = page[a:b]
+            w = cell.find('data-framer-name="Logo Wrapper"')
+            if w >= 0:
+                start = cell.rfind('<div', 0, w)
+                span = element_at(cell, start)
+                cell = (cell[:span[0]]
+                        + '<span class="client-mark">%s</span>' % name
+                        + cell[span[1]:])
+            out.append(cell)
+        page = page[:kids[0][0]] + ''.join(out) + page[kids[-1][1]:]
+        trimmed += 1
         cursor = element_at(page, grid)[2]
 
     print('client grids trimmed:', trimmed, 'to', KEEP_CLIENTS, 'logos each')
@@ -391,6 +410,22 @@ def trim_footer_links(page):
         else:
             break
     print('footer legal links removed:', removed)
+    return page
+
+
+def match_footer_glow(page):
+    """The footer backdrop is a photo; the hero glow is a blurred token colour.
+
+    Dropping the photo and reusing the hero's element makes the two match.
+    """
+    removed = 0
+    for m in list(re.finditer(r'<img[^>]*YAiWqmJ1DFGxCJ93IHzGFZr2Yak[^>]*>', page)):
+        wrapper = page.rfind('<div', 0, m.start())
+        span = element_at(page, wrapper)
+        if span and span[2] > m.end():
+            page = page[:wrapper] + '<div class="footer-glow"></div>' + page[span[2]:]
+            removed += 1
+    print('footer backdrop replaced:', removed)
     return page
 
 
@@ -452,6 +487,7 @@ def main():
     page = wire_counters(page)
     page = trim_clients(page)
     page = trim_footer_links(page)
+    page = match_footer_glow(page)
     page = tag_tickers(page)
     page = contact_icons(page)
     page = rewrite_links(page)
