@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Compress the project screenshots into web-sized WebP.
+"""Prepare the hero portrait and the footer backdrop.
 
-Each source is a ~3584x2240 PNG of several megabytes. The Works cards render
-them at roughly 640px wide, so they are resized to a 2x-retina width and
-re-encoded; a small blurred placeholder is written alongside each for the
-loading shimmer.
+Project screenshots are handled by tools/mockups.py. Reads its originals from
+projects/, which is not committed.
 """
 import os
 from PIL import Image
@@ -13,25 +11,9 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(REPO, 'projects')
 OUT = os.path.join(REPO, 'public', 'projects')
 
-WIDTH = 1280
-QUALITY = 82
 PORTRAIT_WIDTH = 1100
 
 os.makedirs(OUT, exist_ok=True)
-
-
-def slug(name):
-    return os.path.splitext(name)[0].lower().replace('.', '-').replace('_', '-')
-
-
-def convert(path, name):
-    img = Image.open(path).convert('RGB')
-    ratio = WIDTH / img.width
-    img = img.resize((WIDTH, round(img.height * ratio)), Image.LANCZOS)
-
-    full = os.path.join(OUT, name + '.webp')
-    img.save(full, 'WEBP', quality=QUALITY, method=6)
-    return os.path.getsize(path), os.path.getsize(full)
 
 
 def trim_portrait():
@@ -63,18 +45,6 @@ def trim_portrait():
 
 trim_portrait()
 
-total_in = total_out = 0
-for f in sorted(os.listdir(SRC)):
-    if not f.lower().endswith(('.png', '.jpg', '.jpeg')) or f == 'nelson.png':
-        continue
-    a, b = convert(os.path.join(SRC, f), slug(f))
-    total_in += a
-    total_out += b
-    print('%-34s %7.1f MB -> %6.0f KB' % (slug(f), a / 1e6, b / 1e3))
-
-print('total %.1f MB -> %.0f KB' % (total_in / 1e6, total_out / 1e3))
-
-
 def recolour_footer_glow():
     """Shift the footer backdrop from the template's green to this site's orange.
 
@@ -88,6 +58,21 @@ def recolour_footer_glow():
         return
 
     img = Image.open(src).convert('RGB')
+
+    # idempotent: a second pass would rotate the hue past orange
+    probe = img.copy()
+    probe.thumbnail((120, 120))
+    greens = 0
+    for r, g, b in probe.convert('RGB').getdata():
+        if max(r, g, b) < 40:
+            continue
+        hue, _, sat = colorsys.rgb_to_hls(r / 255, g / 255, b / 255)
+        if sat > 0.15 and 0.28 < hue < 0.55:
+            greens += 1
+    if greens < 50:
+        print('%-34s already orange, skipped' % 'footer glow')
+        return
+
     shift = (25 - 150) / 360.0          # green 150deg -> orange 25deg
     px = img.load()
     w, h = img.size
