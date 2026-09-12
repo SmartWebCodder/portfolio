@@ -143,7 +143,7 @@ def style_to_obj(style, strip_hidden=True):
                         hidden = True
                 except ValueError:
                     pass
-            elif prop == 'filter' and 'blur' in val:
+            elif prop in ('filter', '-webkit-filter') and 'blur' in val:
                 hidden = True
             elif prop == 'visibility' and val == 'hidden':
                 hidden = True
@@ -153,7 +153,8 @@ def style_to_obj(style, strip_hidden=True):
         if strip_hidden:
             if prop == 'will-change':
                 continue
-            if hidden and prop in ('opacity', 'transform', 'filter', 'visibility'):
+            if hidden and prop in ('opacity', 'transform', 'filter',
+                                   '-webkit-filter', 'visibility'):
                 continue
         obj[css_prop_to_js(prop)] = val
     return obj, hidden
