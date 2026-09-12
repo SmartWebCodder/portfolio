@@ -161,8 +161,17 @@ def strip_promo(page):
 def localise_images(page):
     page = re.sub(r'\s(?:srcset|srcSet)="[^"]*"', '', page)
     page = re.sub(r'\ssizes="[^"]*"', '', page)
+    # the heavy template photographs are re-encoded as WebP by
+    # tools/optimize_images.py, so the references follow
+    def localise(m):
+        name = m.group(1)
+        webp = os.path.splitext(name)[0] + '.webp'
+        if os.path.exists(os.path.join(REPO, 'public', 'ds', webp)):
+            name = webp
+        return 'src="/ds/%s"' % name
+
     page = re.sub(r'src="https://framerusercontent\.com/images/([^"?]+)[^"]*"',
-                  lambda m: 'src="/%s"' % os.path.join('ds', m.group(1)), page)
+                  localise, page)
 
     page = page.replace(HERO_PORTRAIT, PORTRAIT)
     # the template leaves a bare `alt` on its images, and its intrinsic
@@ -430,12 +439,16 @@ def match_footer_glow(page):
     Dropping the photo and reusing the hero's element makes the two match.
     """
     removed = 0
-    for m in list(re.finditer(r'<img[^>]*YAiWqmJ1DFGxCJ93IHzGFZr2Yak[^>]*>', page)):
+    while True:
+        m = re.search(r'<img[^>]*YAiWqmJ1DFGxCJ93IHzGFZr2Yak[^>]*>', page)
+        if not m:
+            break
         wrapper = page.rfind('<div', 0, m.start())
         span = element_at(page, wrapper)
-        if span and span[2] > m.end():
-            page = page[:wrapper] + '<div class="footer-glow"></div>' + page[span[2]:]
-            removed += 1
+        if not span or span[2] <= m.end():
+            break
+        page = page[:wrapper] + '<div class="footer-glow"></div>' + page[span[2]:]
+        removed += 1
     print('footer backdrop replaced:', removed)
     return page
 

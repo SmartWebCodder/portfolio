@@ -15,5 +15,7 @@ python3 tools/dssplit.py        # -> components/devsync/*.tsx
 python3 tools/lift.py           # Fastfolio content
 python3 tools/wrap.py           # -> components/lifted/*.tsx
 python3 tools/ffcss.py          # -> styles/fastfolio.css
+python3 tools/fonts.py          # self-host webfonts, rewrite @font-face
+python3 tools/prune.py          # drop images nothing references
 
 echo "done"

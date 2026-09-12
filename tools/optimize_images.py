@@ -164,3 +164,46 @@ def peace_favicon():
 
 
 peace_favicon()
+
+
+def compress_template_images():
+    """Re-encode the template photographs as WebP.
+
+    They ship as full-size PNGs of photographs, which is the worst case for
+    PNG; the cards render them a few hundred pixels wide. dslift rewrites the
+    references to .webp to match.
+    """
+    src_dir = os.path.join(REPO, 'public', 'ds')
+    if not os.path.isdir(src_dir):
+        return
+
+    before = after = 0
+    converted = 0
+    for name in sorted(os.listdir(src_dir)):
+        if not name.lower().endswith(('.png', '.jpg', '.jpeg')):
+            continue
+        path = os.path.join(src_dir, name)
+        size = os.path.getsize(path)
+        if size < 40_000:
+            continue
+
+        img = Image.open(path)
+        mode = 'RGBA' if img.mode in ('RGBA', 'LA', 'P') else 'RGB'
+        img = img.convert(mode)
+        if img.width > 1200:
+            img = img.resize((1200, round(img.height * 1200 / img.width)),
+                             Image.LANCZOS)
+
+        out = os.path.splitext(path)[0] + '.webp'
+        img.save(out, 'WEBP', quality=80, method=6)
+        os.remove(path)
+        before += size
+        after += os.path.getsize(out)
+        converted += 1
+
+    if converted:
+        print('%-34s %6.0f KB -> %6.0f KB  (%d files)' % (
+            'template photos', before / 1e3, after / 1e3, converted))
+
+
+compress_template_images()
