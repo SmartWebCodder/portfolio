@@ -33,6 +33,28 @@
     "href": "https://tredibooks.com/"
   },
   {
+    "title": "ViralConnect",
+    "description": "A social growth platform: followers, likes and views on 12 networks, OTP numbers from 150+ countries and Facebook accounts, paid from a crypto-funded wallet with live provider orders.",
+    "tags": [
+      "Laravel",
+      "Livewire",
+      "MySQL"
+    ],
+    "image": "viralconnect",
+    "href": "https://viralconnectapp.com/"
+  },
+  {
+    "title": "Nduku Ogume Festival",
+    "description": "The bilingual home of an age-long Delta State festival: culture pages, the year's programme, videos, music and photo galleries, run from a custom admin.",
+    "tags": [
+      "Laravel",
+      "Livewire",
+      "Tailwind"
+    ],
+    "image": "nduku-ogume",
+    "href": "https://ndukuogumefestival.com/"
+  },
+  {
     "title": "OnLicense",
     "description": "A license server and admin console for shipped software: activation, updates and paid addons, verified against Envato and audited end to end.",
     "tags": [
