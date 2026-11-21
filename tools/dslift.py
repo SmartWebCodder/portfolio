@@ -173,7 +173,8 @@ def localise_images(page):
     page = re.sub(r'src="https://framerusercontent\.com/images/([^"?]+)[^"]*"',
                   localise, page)
 
-    page = page.replace(HERO_PORTRAIT, PORTRAIT)
+    # extract_page converts template photos to WebP, so the stock portrait can arrive as either.
+    page = re.sub(r'%s\.(?:png|webp)' % re.escape(HERO_PORTRAIT.rsplit('.', 1)[0]), PORTRAIT, page)
     # the template leaves a bare `alt` on its images, and its intrinsic
     # width/height no longer describe this file
     page = re.sub(
